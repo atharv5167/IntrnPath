@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Create your personalized career roadmap - InternPath">
+  <title>Get Started - InternPath</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">IP</div>
+        <span>InternPath</span>
+      </a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="index.html#features" class="nav-link">Features</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Onboarding Form -->
+  <main style="padding-top: 120px; min-height: 100vh;">
+    <div class="container" style="max-width: 800px;">
+      <!-- Progress Steps -->
+      <div class="onboarding-progress" style="display: flex; justify-content: center; gap: 8px; margin-bottom: 48px;">
+        <div class="progress-step active" data-step="1">
+          <div class="step-circle">1</div>
+          <span>Basic Info</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="progress-step" data-step="2">
+          <div class="step-circle">2</div>
+          <span>Your Goal</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="progress-step" data-step="3">
+          <div class="step-circle">3</div>
+          <span>Current Skills</span>
+        </div>
+      </div>
+
+      <div class="card" style="padding: 48px;">
+        <!-- Step 1: Basic Info -->
+        <div class="form-step active" id="step1">
+          <div class="text-center mb-xl">
+            <h2>Let's get to know you</h2>
+            <p class="text-muted mt-md">Tell us about yourself to personalize your experience</p>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">What's your name?</label>
+            <input type="text" class="form-input" id="userName" placeholder="Enter your full name" required>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div class="form-group">
+              <label class="form-label">Current Year</label>
+              <select class="form-select" id="userYear" required>
+                <option value="">Select your year</option>
+                <option value="1">1st Year</option>
+                <option value="2">2nd Year</option>
+                <option value="3">3rd Year</option>
+                <option value="4">4th Year</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Branch</label>
+              <select class="form-select" id="userBranch" required>
+                <option value="">Select your branch</option>
+                <option value="CSE">Computer Science (CSE)</option>
+                <option value="IT">Information Technology (IT)</option>
+                <option value="ECE">Electronics & Communication (ECE)</option>
+                <option value="EEE">Electrical & Electronics (EEE)</option>
+                <option value="MECH">Mechanical Engineering</option>
+                <option value="CIVIL">Civil Engineering</option>
+                <option value="CHEM">Chemical Engineering</option>
+                <option value="OTHER">Other</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="flex-between mt-xl">
+            <div></div>
+            <button type="button" class="btn btn-primary" onclick="nextStep(1)">
+              Continue
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 2: Goal Selection -->
+        <div class="form-step" id="step2">
+          <div class="text-center mb-xl">
+            <h2>What's your career goal?</h2>
+            <p class="text-muted mt-md">Choose the path you want to pursue</p>
+          </div>
+
+          <div class="goal-grid" id="goalGrid">
+            <div class="goal-card" data-goal="frontend">
+              <div class="goal-card-icon">💻</div>
+              <div class="goal-card-title">Frontend Developer</div>
+              <div class="goal-card-desc">Build beautiful user interfaces</div>
+            </div>
+
+            <div class="goal-card" data-goal="backend">
+              <div class="goal-card-icon">⚙️</div>
+              <div class="goal-card-title">Backend Developer</div>
+              <div class="goal-card-desc">Power applications with robust APIs</div>
+            </div>
+
+            <div class="goal-card" data-goal="fullstack">
+              <div class="goal-card-icon">🔄</div>
+              <div class="goal-card-title">Full Stack Developer</div>
+              <div class="goal-card-desc">Master both frontend and backend</div>
+            </div>
+
+            <div class="goal-card" data-goal="datascience">
+              <div class="goal-card-icon">📊</div>
+              <div class="goal-card-title">Data Scientist</div>
+              <div class="goal-card-desc">Extract insights from data</div>
+            </div>
+
+            <div class="goal-card" data-goal="ml">
+              <div class="goal-card-icon">🤖</div>
+              <div class="goal-card-title">ML Engineer</div>
+              <div class="goal-card-desc">Build intelligent systems</div>
+            </div>
+
+            <div class="goal-card" data-goal="devops">
+              <div class="goal-card-icon">🚀</div>
+              <div class="goal-card-title">DevOps Engineer</div>
+              <div class="goal-card-desc">Automate and optimize deployments</div>
+            </div>
+
+            <div class="goal-card" data-goal="mobile">
+              <div class="goal-card-icon">📱</div>
+              <div class="goal-card-title">Mobile Developer</div>
+              <div class="goal-card-desc">Create iOS & Android apps</div>
+            </div>
+
+            <div class="goal-card" data-goal="uiux">
+              <div class="goal-card-icon">🎨</div>
+              <div class="goal-card-title">UI/UX Designer</div>
+              <div class="goal-card-desc">Design delightful experiences</div>
+            </div>
+          </div>
+
+          <div class="flex-between mt-xl">
+            <button type="button" class="btn btn-secondary" onclick="prevStep(2)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+              </svg>
+              Back
+            </button>
+            <button type="button" class="btn btn-primary" onclick="nextStep(2)" id="goalNextBtn" disabled>
+              Continue
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 3: Current Skills -->
+        <div class="form-step" id="step3">
+          <div class="text-center mb-xl">
+            <h2>Rate your current skills</h2>
+            <p class="text-muted mt-md">Select skills you know and rate your proficiency level</p>
+          </div>
+
+          <div id="skillsContainer">
+            <!-- Skills will be dynamically populated based on goal -->
+          </div>
+
+          <div class="flex-between mt-xl">
+            <button type="button" class="btn btn-secondary" onclick="prevStep(3)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+              </svg>
+              Back
+            </button>
+            <button type="button" class="btn btn-primary" onclick="submitForm()">
+              Generate My Roadmap
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <style>
+    .onboarding-progress {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .progress-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-secondary);
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    .progress-step.active {
+      color: var(--accent);
+    }
+
+    .progress-step.completed {
+      color: var(--success);
+    }
+
+    .step-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--bg-tertiary);
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .progress-step.active .step-circle {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    .progress-step.completed .step-circle {
+      background: var(--success);
+      border-color: var(--success);
+      color: white;
+    }
+
+    .step-line {
+      width: 60px;
+      height: 2px;
+      background: var(--border);
+      margin: 0 8px;
+      margin-bottom: 24px;
+    }
+
+    .form-step {
+      display: none;
+    }
+
+    .form-step.active {
+      display: block;
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+
+  <script src="app.js"></script>
+  <script>
+    let currentStep = 1;
+    let selectedGoal = null;
+    let selectedSkills = {}; // Changed to object to store {skillId: level}
+
+    // Goal card selection
+    document.querySelectorAll('.goal-card').forEach(card => {
+      card.addEventListener('click', () => {
+        document.querySelectorAll('.goal-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        selectedGoal = card.dataset.goal;
+        document.getElementById('goalNextBtn').disabled = false;
+      });
+    });
+
+    function updateProgressSteps(step) {
+      document.querySelectorAll('.progress-step').forEach((el, index) => {
+        el.classList.remove('active', 'completed');
+        if (index + 1 < step) {
+          el.classList.add('completed');
+        } else if (index + 1 === step) {
+          el.classList.add('active');
+        }
+      });
+    }
+
+    function nextStep(current) {
+      // Validation
+      if (current === 1) {
+        const name = document.getElementById('userName').value.trim();
+        const year = document.getElementById('userYear').value;
+        const branch = document.getElementById('userBranch').value;
+        
+        if (!name || !year || !branch) {
+          alert('Please fill in all fields');
+          return;
+        }
+      }
+
+      if (current === 2 && !selectedGoal) {
+        alert('Please select a goal');
+        return;
+      }
+
+      // Move to next step
+      document.getElementById(`step${current}`).classList.remove('active');
+      document.getElementById(`step${current + 1}`).classList.add('active');
+      currentStep = current + 1;
+      updateProgressSteps(currentStep);
+
+      // Populate skills for step 3
+      if (currentStep === 3) {
+        populateSkills();
+      }
+    }
+
+    function prevStep(current) {
+      document.getElementById(`step${current}`).classList.remove('active');
+      document.getElementById(`step${current - 1}`).classList.add('active');
+      currentStep = current - 1;
+      updateProgressSteps(currentStep);
+    }
+
+    function populateSkills() {
+      const skillsByGoal = {
+        frontend: [
+          { id: 'html', name: 'HTML', category: 'Basic' },
+          { id: 'css', name: 'CSS', category: 'Basic' },
+          { id: 'javascript', name: 'JavaScript', category: 'Basic' },
+          { id: 'react', name: 'React.js', category: 'Intermediate' },
+          { id: 'typescript', name: 'TypeScript', category: 'Intermediate' },
+          { id: 'tailwind', name: 'Tailwind CSS', category: 'Intermediate' },
+          { id: 'nextjs', name: 'Next.js', category: 'Advanced' },
+          { id: 'testing', name: 'Testing (Jest)', category: 'Advanced' }
+        ],
+        backend: [
+          { id: 'programming', name: 'Any Programming Language', category: 'Basic' },
+          { id: 'nodejs', name: 'Node.js', category: 'Basic' },
+          { id: 'python', name: 'Python', category: 'Basic' },
+          { id: 'databases', name: 'SQL Databases', category: 'Intermediate' },
+          { id: 'mongodb', name: 'MongoDB', category: 'Intermediate' },
+          { id: 'rest', name: 'REST APIs', category: 'Intermediate' },
+          { id: 'auth', name: 'Authentication', category: 'Advanced' },
+          { id: 'docker', name: 'Docker', category: 'Advanced' }
+        ],
+        fullstack: [
+          { id: 'html', name: 'HTML/CSS', category: 'Basic' },
+          { id: 'javascript', name: 'JavaScript', category: 'Basic' },
+          { id: 'react', name: 'React.js', category: 'Intermediate' },
+          { id: 'nodejs', name: 'Node.js', category: 'Intermediate' },
+          { id: 'databases', name: 'Databases (SQL/NoSQL)', category: 'Intermediate' },
+          { id: 'rest', name: 'REST APIs', category: 'Intermediate' },
+          { id: 'git', name: 'Git & GitHub', category: 'Intermediate' },
+          { id: 'deployment', name: 'Deployment', category: 'Advanced' }
+        ],
+        datascience: [
+          { id: 'python', name: 'Python', category: 'Basic' },
+          { id: 'statistics', name: 'Statistics', category: 'Basic' },
+          { id: 'pandas', name: 'Pandas', category: 'Intermediate' },
+          { id: 'numpy', name: 'NumPy', category: 'Intermediate' },
+          { id: 'visualization', name: 'Data Visualization', category: 'Intermediate' },
+          { id: 'sql', name: 'SQL', category: 'Intermediate' },
+          { id: 'ml_basics', name: 'ML Basics', category: 'Advanced' },
+          { id: 'bigdata', name: 'Big Data Tools', category: 'Advanced' }
+        ],
+        ml: [
+          { id: 'python', name: 'Python', category: 'Basic' },
+          { id: 'math', name: 'Linear Algebra', category: 'Basic' },
+          { id: 'statistics', name: 'Statistics & Probability', category: 'Basic' },
+          { id: 'numpy', name: 'NumPy', category: 'Intermediate' },
+          { id: 'sklearn', name: 'Scikit-learn', category: 'Intermediate' },
+          { id: 'tensorflow', name: 'TensorFlow/PyTorch', category: 'Advanced' },
+          { id: 'deeplearning', name: 'Deep Learning', category: 'Advanced' },
+          { id: 'mlops', name: 'MLOps', category: 'Advanced' }
+        ],
+        devops: [
+          { id: 'linux', name: 'Linux', category: 'Basic' },
+          { id: 'scripting', name: 'Bash Scripting', category: 'Basic' },
+          { id: 'git', name: 'Git', category: 'Basic' },
+          { id: 'docker', name: 'Docker', category: 'Intermediate' },
+          { id: 'cicd', name: 'CI/CD', category: 'Intermediate' },
+          { id: 'kubernetes', name: 'Kubernetes', category: 'Advanced' },
+          { id: 'aws', name: 'AWS/Cloud', category: 'Advanced' },
+          { id: 'terraform', name: 'Terraform', category: 'Advanced' }
+        ],
+        mobile: [
+          { id: 'programming', name: 'Programming Basics', category: 'Basic' },
+          { id: 'javascript', name: 'JavaScript', category: 'Basic' },
+          { id: 'reactnative', name: 'React Native', category: 'Intermediate' },
+          { id: 'flutter', name: 'Flutter', category: 'Intermediate' },
+          { id: 'swift', name: 'Swift (iOS)', category: 'Intermediate' },
+          { id: 'kotlin', name: 'Kotlin (Android)', category: 'Intermediate' },
+          { id: 'apis', name: 'REST APIs', category: 'Intermediate' },
+          { id: 'appstore', name: 'App Store Deployment', category: 'Advanced' }
+        ],
+        uiux: [
+          { id: 'design_basics', name: 'Design Principles', category: 'Basic' },
+          { id: 'figma', name: 'Figma', category: 'Basic' },
+          { id: 'wireframing', name: 'Wireframing', category: 'Intermediate' },
+          { id: 'prototyping', name: 'Prototyping', category: 'Intermediate' },
+          { id: 'user_research', name: 'User Research', category: 'Intermediate' },
+          { id: 'design_systems', name: 'Design Systems', category: 'Advanced' },
+          { id: 'usability', name: 'Usability Testing', category: 'Advanced' },
+          { id: 'motion', name: 'Motion Design', category: 'Advanced' }
+        ]
+      };
+
+      const skills = skillsByGoal[selectedGoal] || [];
+      const container = document.getElementById('skillsContainer');
+      
+      container.innerHTML = `
+        <div class="skills-grid">
+          ${skills.map(skill => `
+            <div class="skill-level-card" data-skill="${skill.id}" id="skill-card-${skill.id}">
+              <div class="skill-card-header">
+                <div class="skill-card-checkbox" onclick="toggleSkillCard('${skill.id}')">
+                  <div class="skill-checkmark"></div>
+                </div>
+                <div class="skill-card-info">
+                  <div class="skill-card-name">${skill.name}</div>
+                  <span class="skill-badge ${skill.category === 'Basic' ? 'easy' : skill.category === 'Intermediate' ? 'medium' : 'hard'}">
+                    ${skill.category}
+                  </span>
+                </div>
+              </div>
+              <div class="skill-level-selector" id="level-selector-${skill.id}" style="display: none;">
+                <label class="skill-level-label">Your proficiency level:</label>
+                <div class="level-buttons">
+                  <button type="button" class="level-btn" data-level="beginner" onclick="setSkillLevel('${skill.id}', 'beginner', this)">
+                    <span class="level-icon">🌱</span>
+                    <span class="level-text">Beginner</span>
+                    <span class="level-desc">Just started learning</span>
+                  </button>
+                  <button type="button" class="level-btn" data-level="intermediate" onclick="setSkillLevel('${skill.id}', 'intermediate', this)">
+                    <span class="level-icon">🌿</span>
+                    <span class="level-text">Intermediate</span>
+                    <span class="level-desc">Can build projects</span>
+                  </button>
+                  <button type="button" class="level-btn" data-level="advanced" onclick="setSkillLevel('${skill.id}', 'advanced', this)">
+                    <span class="level-icon">🌳</span>
+                    <span class="level-text">Advanced</span>
+                    <span class="level-desc">Production ready</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+        <p class="text-muted text-center mt-lg" style="font-size: 14px;">
+          💡 Only select skills you have some knowledge in. It's okay to leave some empty!
+        </p>
+
+        <style>
+          .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 16px;
+          }
+
+          .skill-level-card {
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            transition: all 0.3s ease;
+          }
+
+          .skill-level-card.selected {
+            border-color: var(--accent);
+            background: rgba(255, 107, 0, 0.05);
+          }
+
+          .skill-card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+          }
+
+          .skill-card-checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+          }
+
+          .skill-card-checkbox:hover {
+            border-color: var(--accent);
+          }
+
+          .skill-level-card.selected .skill-card-checkbox {
+            background: var(--accent);
+            border-color: var(--accent);
+          }
+
+          .skill-checkmark::after {
+            content: '';
+            display: none;
+          }
+
+          .skill-level-card.selected .skill-checkmark::after {
+            content: '✓';
+            display: block;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+          }
+
+          .skill-card-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+          }
+
+          .skill-card-name {
+            font-weight: 500;
+            font-size: 15px;
+          }
+
+          .skill-level-selector {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+            animation: slideDown 0.3s ease;
+          }
+
+          @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+
+          .skill-level-label {
+            display: block;
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+          }
+
+          .level-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+          }
+
+          .level-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 12px 8px;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s ease;
+          }
+
+          .level-btn:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+          }
+
+          .level-btn.selected {
+            background: rgba(255, 107, 0, 0.15);
+            border-color: var(--accent);
+          }
+
+          .level-icon {
+            font-size: 20px;
+          }
+
+          .level-text {
+            font-weight: 600;
+            font-size: 12px;
+            color: var(--text-primary);
+          }
+
+          .level-desc {
+            font-size: 10px;
+            color: var(--text-secondary);
+            text-align: center;
+          }
+
+          @media (max-width: 768px) {
+            .skills-grid {
+              grid-template-columns: 1fr;
+            }
+            
+            .level-buttons {
+              grid-template-columns: 1fr;
+            }
+          }
+        </style>
+      `;
+    }
+
+    function toggleSkillCard(skillId) {
+      const card = document.getElementById(`skill-card-${skillId}`);
+      const selector = document.getElementById(`level-selector-${skillId}`);
+      
+      if (card.classList.contains('selected')) {
+        // Deselect
+        card.classList.remove('selected');
+        selector.style.display = 'none';
+        delete selectedSkills[skillId];
+      } else {
+        // Select
+        card.classList.add('selected');
+        selector.style.display = 'block';
+        // Default to beginner if no level set
+        if (!selectedSkills[skillId]) {
+          selectedSkills[skillId] = 'beginner';
+          const beginnerBtn = selector.querySelector('[data-level="beginner"]');
+          if (beginnerBtn) beginnerBtn.classList.add('selected');
+        }
+      }
+    }
+
+    function setSkillLevel(skillId, level, button) {
+      // Update selected level
+      selectedSkills[skillId] = level;
+      
+      // Update button states
+      const selector = document.getElementById(`level-selector-${skillId}`);
+      selector.querySelectorAll('.level-btn').forEach(btn => btn.classList.remove('selected'));
+      button.classList.add('selected');
+    }
+
+    function submitForm() {
+      const userData = {
+        name: document.getElementById('userName').value.trim(),
+        year: document.getElementById('userYear').value,
+        branch: document.getElementById('userBranch').value,
+        goal: selectedGoal,
+        currentSkills: selectedSkills,
+        createdAt: new Date().toISOString()
+      };
+
+      localStorage.setItem('internpath_user', JSON.stringify(userData));
+      showLoadingAnimation();
+    }
+
+    function showLoadingAnimation() {
+      const overlay = document.createElement('div');
+      overlay.className = 'loading-overlay';
+      overlay.innerHTML = `
+        <div class="loading-screen">
+          <!-- Scan lines effect -->
+          <div class="scan-lines"></div>
+          
+          <!-- Grid background -->
+          <div class="grid-bg"></div>
+          
+          <!-- Main content -->
+          <div class="loading-center">
+            <div class="system-text">SYSTEM INITIALIZING</div>
+            
+            <div class="loading-ring">
+              <div class="ring-segment seg-1"></div>
+              <div class="ring-segment seg-2"></div>
+              <div class="ring-segment seg-3"></div>
+              <div class="ring-center">
+                <span class="percent-value">0</span>%
+              </div>
+            </div>
+            
+            <div class="status-text">ANALYZING ACADEMIC TRAJECTORY...</div>
+            
+            <div class="progress-bar">
+              <div class="progress-fill"></div>
+              <div class="progress-glow"></div>
+            </div>
+            
+            <div class="data-stream">
+              <span>LOADING CAREER PATH DATA</span>
+              <span class="dots">...</span>
+            </div>
+          </div>
+          
+          <!-- Corner decorations -->
+          <div class="corner-decor top-left"></div>
+          <div class="corner-decor top-right"></div>
+          <div class="corner-decor bottom-left"></div>
+          <div class="corner-decor bottom-right"></div>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+
+      requestAnimationFrame(() => overlay.classList.add('active'));
+
+      // Animate percentage counter
+      let percent = 0;
+      const percentEl = overlay.querySelector('.percent-value');
+      const interval = setInterval(() => {
+        percent += 2;
+        if (percent > 100) percent = 100;
+        percentEl.textContent = percent;
+        if (percent >= 100) clearInterval(interval);
+      }, 75);
+
+      // Redirect after 4 seconds
+      setTimeout(() => {
+        window.location.href = 'dashboard.html';
+      }, 4000);
+    }
+  </script>
+
+  <style>
+    /* ===== TECH UI LOADING ANIMATION ===== */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 9999;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .loading-overlay.active {
+      opacity: 1;
+    }
+
+    .loading-screen {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a0f08 50%, #0a0604 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Scan lines effect */
+    .scan-lines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(255, 107, 0, 0.03) 2px,
+        rgba(255, 107, 0, 0.03) 4px
+      );
+      pointer-events: none;
+      animation: scanMove 8s linear infinite;
+    }
+
+    @keyframes scanMove {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(100px); }
+    }
+
+    /* Grid background */
+    .grid-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: 
+        linear-gradient(rgba(255, 107, 0, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 107, 0, 0.05) 1px, transparent 1px);
+      background-size: 50px 50px;
+      opacity: 0.5;
+    }
+
+    /* Center content */
+    .loading-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      z-index: 10;
+    }
+
+    /* System text */
+    .system-text {
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      color: #ff6b00;
+      text-shadow: 0 0 20px rgba(255, 107, 0, 0.5), 0 0 40px rgba(255, 107, 0, 0.3);
+      animation: textGlow 1.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes textGlow {
+      from { text-shadow: 0 0 20px rgba(255, 107, 0, 0.5), 0 0 40px rgba(255, 107, 0, 0.3); }
+      to { text-shadow: 0 0 30px rgba(255, 107, 0, 0.8), 0 0 60px rgba(255, 107, 0, 0.5); }
+    }
+
+    /* Loading ring */
+    .loading-ring {
+      position: relative;
+      width: 180px;
+      height: 180px;
+    }
+
+    .ring-segment {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border: 3px solid transparent;
+      border-radius: 50%;
+    }
+
+    .seg-1 {
+      border-top-color: #ff6b00;
+      animation: spin 1s linear infinite;
+    }
+
+    .seg-2 {
+      border-right-color: #ff8c00;
+      animation: spin 1.5s linear infinite reverse;
+      width: 85%;
+      height: 85%;
+      top: 7.5%;
+      left: 7.5%;
+    }
+
+    .seg-3 {
+      border-bottom-color: #ffaa00;
+      animation: spin 2s linear infinite;
+      width: 70%;
+      height: 70%;
+      top: 15%;
+      left: 15%;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .ring-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 2rem;
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 0 10px rgba(255, 107, 0, 0.5);
+    }
+
+    .percent-value {
+      font-size: 2.5rem;
+      color: #ff6b00;
+    }
+
+    /* Status text */
+    .status-text {
+      font-size: clamp(0.9rem, 2vw, 1.1rem);
+      letter-spacing: 0.15em;
+      color: rgba(255, 255, 255, 0.7);
+      animation: blink 0.5s steps(2) infinite;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0.5; }
+    }
+
+    /* Progress bar */
+    .progress-bar {
+      width: min(400px, 80vw);
+      height: 6px;
+      background: rgba(255, 107, 0, 0.2);
+      border-radius: 3px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #ff6b00, #ffaa00);
+      border-radius: 3px;
+      animation: progressFill 4s ease-out forwards;
+    }
+
+    @keyframes progressFill {
+      from { width: 0%; }
+      to { width: 100%; }
+    }
+
+    .progress-glow {
+      position: absolute;
+      top: -5px;
+      left: 0;
+      width: 50px;
+      height: 16px;
+      background: linear-gradient(90deg, transparent, rgba(255, 107, 0, 0.6), transparent);
+      animation: progressGlow 4s ease-out forwards;
+    }
+
+    @keyframes progressGlow {
+      from { left: 0%; }
+      to { left: calc(100% - 50px); }
+    }
+
+    /* Data stream text */
+    .data-stream {
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      color: rgba(255, 140, 0, 0.6);
+    }
+
+    .dots {
+      animation: dotPulse 1s steps(3) infinite;
+    }
+
+    @keyframes dotPulse {
+      0% { opacity: 0.3; }
+      50% { opacity: 1; }
+      100% { opacity: 0.3; }
+    }
+
+    /* Corner decorations */
+    .corner-decor {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      border: 2px solid rgba(255, 107, 0, 0.3);
+    }
+
+    .top-left {
+      top: 20px;
+      left: 20px;
+      border-right: none;
+      border-bottom: none;
+    }
+
+    .top-right {
+      top: 20px;
+      right: 20px;
+      border-left: none;
+      border-bottom: none;
+    }
+
+    .bottom-left {
+      bottom: 20px;
+      left: 20px;
+      border-right: none;
+      border-top: none;
+    }
+
+    .bottom-right {
+      bottom: 20px;
+      right: 20px;
+      border-left: none;
+      border-top: none;
+    }
+  </style>
+</body>
+</html>
+

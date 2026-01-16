@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Interactive roadmap visualization - InternPath">
+  <title>Detailed Roadmap - InternPath</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+  <style>
+    /* Flow Map Specific Styles */
+    .flow-map-container {
+      min-height: 100vh;
+      padding: 80px 40px 40px;
+      background: var(--bg-primary);
+      overflow-x: auto;
+    }
+
+    .flow-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 40px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .flow-header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .back-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: all var(--transition-fast);
+    }
+
+    .back-btn:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+
+    .flow-title {
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .flow-title span {
+      color: var(--accent);
+    }
+
+    .flow-legend {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .legend-dot.known { background: #22C55E; }
+    .legend-dot.upgrade { background: #FF9800; }
+    .legend-dot.new { background: #3B82F6; }
+
+    /* Continuous Flow Map */
+    .flow-map {
+      position: relative;
+      padding: 40px 20px;
+      min-width: fit-content;
+    }
+
+    .flow-tree {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    /* Goal Node (Root) */
+    .goal-node {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+
+    .goal-node .flow-node {
+      background: linear-gradient(135deg, rgba(255, 107, 0, 0.25) 0%, rgba(255, 107, 0, 0.1) 100%);
+      border: 2px solid var(--accent);
+      padding: 24px 40px;
+      min-width: 250px;
+      box-shadow: 0 0 30px var(--accent-glow);
+    }
+
+    /* Main Branch (vertical stem) */
+    .main-stem {
+      width: 3px;
+      background: linear-gradient(180deg, var(--accent), var(--border));
+      position: relative;
+    }
+
+    /* Skill Row (horizontal level) */
+    .skill-row {
+      display: flex;
+      align-items: flex-start;
+      position: relative;
+      margin: 20px 0;
+    }
+
+    .skill-row::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+      width: 2px;
+      height: 20px;
+      background: var(--border);
+      transform: translateX(-50%);
+    }
+
+    /* Horizontal connector */
+    .h-connector {
+      width: 60px;
+      height: 2px;
+      background: var(--border);
+      position: relative;
+      margin-top: 30px;
+    }
+
+    .h-connector::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: -3px;
+      width: 8px;
+      height: 8px;
+      background: var(--border);
+      border-radius: 50%;
+    }
+
+    /* Flow Node Styles */
+    .flow-node {
+      position: relative;
+      background: var(--bg-card);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+      cursor: pointer;
+      transition: all var(--transition-base);
+      text-align: center;
+      min-width: 140px;
+      max-width: 180px;
+    }
+
+    .flow-node:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      z-index: 10;
+    }
+
+    .flow-node.known {
+      border-color: #22C55E;
+      background: rgba(34, 197, 94, 0.15);
+    }
+
+    .flow-node.known::after {
+      content: '✓';
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      width: 20px;
+      height: 20px;
+      background: #22C55E;
+      color: white;
+      border-radius: 50%;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .flow-node.upgrade {
+      border-color: #FF9800;
+      background: rgba(255, 152, 0, 0.15);
+    }
+
+    .flow-node.new {
+      border-color: #3B82F6;
+      background: rgba(59, 130, 246, 0.1);
+    }
+
+    .flow-node.active {
+      border-color: var(--accent) !important;
+      box-shadow: 0 0 25px var(--accent-glow);
+    }
+
+    .node-icon {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .node-title {
+      font-weight: 600;
+      font-size: 13px;
+      margin-bottom: 4px;
+      line-height: 1.3;
+    }
+
+    .node-status {
+      font-size: 10px;
+      color: var(--text-secondary);
+    }
+
+    /* Skill Branches */
+    .skill-branch {
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+
+    .skill-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .skill-group-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    /* Horizontal layout for tree */
+    .flow-horizontal {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 50px;
+      flex-wrap: wrap;
+      padding: 40px 20px;
+      position: relative;
+    }
+
+    .flow-column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      position: relative;
+      padding-top: 20px;
+    }
+
+    /* Connecting line inside column - positioned BEHIND nodes */
+    .column-connector {
+      position: absolute;
+      top: 60px;  /* Start below category label */
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      height: calc(100% - 80px);  /* Extend to near bottom */
+      background: linear-gradient(180deg, var(--accent) 0%, rgba(255, 107, 0, 0.3) 100%);
+      z-index: 0;  /* Behind nodes */
+      pointer-events: none;
+    }
+
+    .flow-column .flow-node {
+      z-index: 2;  /* Above the line */
+      position: relative;
+      background: var(--bg-card);  /* Solid background to cover line */
+    }
+
+    .category-label {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 6px 16px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    /* Skill Info Panel */
+    .skill-info-panel {
+      position: fixed;
+      top: 0;
+      right: -450px;
+      width: 450px;
+      height: 100vh;
+      background: var(--bg-secondary);
+      border-left: 1px solid var(--border);
+      z-index: 1000;
+      transition: right 0.3s ease;
+      overflow-y: auto;
+    }
+
+    .skill-info-panel.open {
+      right: 0;
+    }
+
+    .skill-info-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-card);
+    }
+
+    .skill-info-title {
+      font-size: 20px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .close-panel {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .close-panel:hover {
+      border-color: var(--error);
+      color: var(--error);
+    }
+
+    .skill-info-content {
+      padding: 24px;
+    }
+
+    .info-section {
+      margin-bottom: 24px;
+    }
+
+    .info-section-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .info-section-content {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text-secondary);
+    }
+
+    .info-level-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: 13px;
+    }
+
+    .info-level-badge.beginner { border-color: #22C55E; color: #22C55E; }
+    .info-level-badge.intermediate { border-color: #FF9800; color: #FF9800; }
+    .info-level-badge.advanced { border-color: #F44336; color: #F44336; }
+
+    .info-resources {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .info-resource-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: all var(--transition-fast);
+    }
+
+    .info-resource-link:hover {
+      border-color: var(--accent);
+      background: rgba(255, 107, 0, 0.1);
+    }
+
+    /* Overlay */
+    .panel-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .panel-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Progress indicator */
+    .flow-progress {
+      text-align: center;
+      padding: 16px 24px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      margin-bottom: 40px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .flow-progress-text {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+
+    .flow-progress-bar {
+      height: 8px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+
+    .flow-progress-fill {
+      height: 100%;
+      background: var(--gradient-accent);
+      border-radius: var(--radius-full);
+      transition: width 0.5s ease;
+    }
+
+    /* Finish node */
+    .finish-node {
+      margin-top: 40px;
+      text-align: center;
+    }
+
+    .finish-node .flow-node {
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(34, 197, 94, 0.1) 100%);
+      border-color: #22C55E;
+      min-width: 200px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">IP</div>
+        <span>InternPath</span>
+      </a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="dashboard.html" class="nav-link">Dashboard</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="flow-map-container">
+    <!-- Header -->
+    <div class="flow-header">
+      <div class="flow-header-left">
+        <a href="dashboard.html" class="back-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+          Back to Dashboard
+        </a>
+        <h1 class="flow-title">🗺️ <span id="flowGoalTitle">ML Engineer</span> Roadmap</h1>
+      </div>
+      <div class="flow-legend">
+        <div class="legend-item">
+          <div class="legend-dot known"></div>
+          <span>Already Know</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot upgrade"></div>
+          <span>Need Upgrade</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot new"></div>
+          <span>New Skill</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Progress -->
+    <div class="flow-progress">
+      <div class="flow-progress-text">
+        <strong id="progressCount">0</strong> of <strong id="totalSkills">0</strong> skills completed
+      </div>
+      <div class="flow-progress-bar">
+        <div class="flow-progress-fill" id="progressFill" style="width: 0%;"></div>
+      </div>
+    </div>
+
+    <!-- Flow Map -->
+    <div class="flow-map" id="flowMap">
+      <!-- Will be generated dynamically -->
+      <div class="loading-spinner" style="width: 60px; height: 60px;"></div>
+      <p class="text-muted">Loading your personalized roadmap...</p>
+    </div>
+  </div>
+
+  <!-- Skill Info Panel -->
+  <div class="panel-overlay" id="panelOverlay" onclick="closeSkillPanel()"></div>
+  <div class="skill-info-panel" id="skillInfoPanel">
+    <div class="skill-info-header">
+      <div class="skill-info-title">
+        <span id="panelSkillIcon">📚</span>
+        <span id="panelSkillName">Skill Name</span>
+      </div>
+      <button class="close-panel" onclick="closeSkillPanel()">✕</button>
+    </div>
+    <div class="skill-info-content">
+      <div class="info-section">
+        <div class="info-section-title">📖 What is it?</div>
+        <div class="info-section-content" id="panelDescription">
+          Description loading...
+        </div>
+      </div>
+      <div class="info-section">
+        <div class="info-section-title">🎯 Why learn this?</div>
+        <div class="info-section-content" id="panelWhyLearn">
+          Reason loading...
+        </div>
+      </div>
+      <div class="info-section">
+        <div class="info-section-title">📊 Required Level</div>
+        <div id="panelLevel">
+          <span class="info-level-badge intermediate">Intermediate</span>
+        </div>
+      </div>
+      <div class="info-section">
+        <div class="info-section-title">🔗 Learning Resources</div>
+        <div class="info-resources" id="panelResources">
+          <!-- Resources will be added here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    // Skill descriptions and context
+    const skillDescriptions = {
+      // ML Skills
+      python_ml: {
+        name: 'Python for ML',
+        icon: '🐍',
+        description: 'Python is the most popular programming language for machine learning. It offers powerful libraries like NumPy, Pandas, and Scikit-learn that make data manipulation and ML implementation straightforward.',
+        whyLearn: 'Python is the foundation of almost all ML work. From data preprocessing to model deployment, you\'ll use Python at every step. Its simple syntax lets you focus on learning ML concepts rather than fighting with code.',
+        level: 'intermediate'
+      },
+      linear_algebra: {
+        name: 'Linear Algebra',
+        icon: '📐',
+        description: 'Linear algebra deals with vectors, matrices, and linear transformations. Concepts like matrix multiplication, eigenvalues, and vector spaces are fundamental to understanding how ML algorithms work.',
+        whyLearn: 'Neural networks are essentially chains of matrix multiplications. Understanding linear algebra helps you grasp how data flows through models and why certain architectures work better than others.',
+        level: 'intermediate'
+      },
+      calculus: {
+        name: 'Calculus for ML',
+        icon: '∫',
+        description: 'Calculus, particularly differential calculus, is used to understand how functions change. Gradients and derivatives are core to optimization algorithms like gradient descent.',
+        whyLearn: 'Training ML models is all about optimization - finding the best parameters. Calculus explains how backpropagation works and why gradient descent converges to good solutions.',
+        level: 'intermediate'
+      },
+      probability: {
+        name: 'Probability & Statistics',
+        icon: '🎲',
+        description: 'Probability theory and statistics help you understand uncertainty, make predictions, and evaluate model performance. Concepts include distributions, hypothesis testing, and Bayesian inference.',
+        whyLearn: 'ML is fundamentally about learning patterns from data under uncertainty. Probability helps you understand model confidence, and statistics helps you validate your results properly.',
+        level: 'intermediate'
+      },
+      ml_theory: {
+        name: 'ML Fundamentals',
+        icon: '🧠',
+        description: 'Core concepts of machine learning including supervised vs unsupervised learning, bias-variance tradeoff, overfitting, cross-validation, and the ML pipeline.',
+        whyLearn: 'Before diving into specific algorithms, you need to understand the general principles. This knowledge helps you choose the right approach for any problem.',
+        level: 'intermediate'
+      },
+      sklearn: {
+        name: 'Scikit-learn',
+        icon: '🔬',
+        description: 'Scikit-learn is Python\'s most popular ML library for classical machine learning. It provides simple APIs for classification, regression, clustering, and preprocessing.',
+        whyLearn: 'Scikit-learn lets you quickly prototype and test ML ideas. It\'s the go-to tool for classical ML before moving to deep learning frameworks.',
+        level: 'intermediate'
+      },
+      neural_networks: {
+        name: 'Neural Networks',
+        icon: '🕸️',
+        description: 'Artificial neural networks are computing systems inspired by biological neural networks. They consist of layers of interconnected nodes that learn representations from data.',
+        whyLearn: 'Neural networks are the foundation of deep learning and have revolutionized AI. Understanding them opens doors to computer vision, NLP, and cutting-edge AI research.',
+        level: 'advanced'
+      },
+      pytorch: {
+        name: 'PyTorch',
+        icon: '🔥',
+        description: 'PyTorch is a deep learning framework known for its dynamic computation graphs and Pythonic design. It\'s widely used in research and increasingly in production.',
+        whyLearn: 'PyTorch is the preferred framework in ML research and is becoming the industry standard. Its flexibility makes it ideal for experimenting with new ideas.',
+        level: 'advanced'
+      },
+      cnn: {
+        name: 'Convolutional Neural Networks',
+        icon: '👁️',
+        description: 'CNNs are specialized neural networks for processing grid-like data such as images. They use convolutional layers to automatically learn spatial hierarchies of features.',
+        whyLearn: 'CNNs power computer vision applications from image classification to object detection. They\'re essential for any ML engineer working with visual data.',
+        level: 'advanced'
+      },
+      rnn: {
+        name: 'Recurrent Neural Networks',
+        icon: '🔄',
+        description: 'RNNs are networks with loops that allow information to persist. LSTMs and GRUs are variants designed to handle long-term dependencies in sequential data.',
+        whyLearn: 'RNNs are fundamental for understanding sequence modeling, even though transformers have become more popular. They teach important concepts about temporal data.',
+        level: 'advanced'
+      },
+      mlflow: {
+        name: 'MLflow',
+        icon: '📦',
+        description: 'MLflow is an open-source platform for managing the ML lifecycle, including experimentation, reproducibility, and deployment.',
+        whyLearn: 'Real ML projects require tracking experiments, versioning models, and deploying to production. MLflow provides essential tooling for professional ML work.',
+        level: 'intermediate'
+      },
+      // Frontend Skills
+      html: {
+        name: 'HTML',
+        icon: '📄',
+        description: 'HTML (HyperText Markup Language) is the standard markup language for creating web pages. It defines the structure and content of web documents.',
+        whyLearn: 'HTML is the skeleton of every website. You cannot build web applications without understanding how HTML structures content.',
+        level: 'beginner'
+      },
+      css: {
+        name: 'CSS',
+        icon: '🎨',
+        description: 'CSS (Cascading Style Sheets) is used to style and layout web pages. It controls colors, fonts, spacing, and responsive design.',
+        whyLearn: 'CSS brings your HTML to life with visual styling. Modern CSS with Flexbox and Grid makes complex layouts achievable.',
+        level: 'beginner'
+      },
+      javascript_basics: {
+        name: 'JavaScript Basics',
+        icon: '⚡',
+        description: 'JavaScript is the programming language of the web. It adds interactivity, handles events, and manipulates the DOM.',
+        whyLearn: 'JavaScript is essential for any frontend work. It\'s also the foundation for React, Node.js, and modern web development.',
+        level: 'intermediate'
+      },
+      react_basics: {
+        name: 'React',
+        icon: '⚛️',
+        description: 'React is a JavaScript library for building user interfaces. It uses a component-based architecture and virtual DOM for efficient updates.',
+        whyLearn: 'React is the most popular frontend framework, used by companies like Facebook, Netflix, and Airbnb. It\'s essential for modern UI development.',
+        level: 'intermediate'
+      }
+    };
+
+    // Generate flow map on load
+    document.addEventListener('DOMContentLoaded', () => {
+      const userData = getUserData();
+      if (!userData) {
+        window.location.href = 'onboarding.html';
+        return;
+      }
+
+      // Set goal title
+      const goalTitles = {
+        ml: 'ML Engineer',
+        frontend: 'Frontend Developer',
+        backend: 'Backend Developer',
+        fullstack: 'Full Stack Developer',
+        datascience: 'Data Scientist',
+        devops: 'DevOps Engineer',
+        mobile: 'Mobile Developer',
+        uiux: 'UI/UX Designer'
+      };
+      document.getElementById('flowGoalTitle').textContent = goalTitles[userData.goal] || userData.goal;
+
+      generateFlowMap(userData);
+    });
+
+    function generateFlowMap(userData) {
+      const userSkills = userData.currentSkills || {};
+      const goal = userData.goal;
+
+      const dynamicRoadmap = generateDynamicRoadmap(goal, userSkills);
+      if (!dynamicRoadmap) {
+        document.getElementById('flowMap').innerHTML = '<p class="text-muted">Could not generate roadmap</p>';
+        return;
+      }
+
+      const progress = getProgress();
+
+      // Calculate totals
+      let totalSkills = 0;
+      let completedSkills = 0;
+
+      // Flatten all skills from all phases
+      const allSkills = [];
+      dynamicRoadmap.phases.forEach(phase => {
+        phase.skills.forEach(skill => {
+          allSkills.push({ ...skill, phase: phase.name, category: phase.category });
+          totalSkills++;
+          if (progress.completedSkills.includes(skill.id) || skill.status === 'known') {
+            completedSkills++;
+          }
+        });
+      });
+
+      // Update progress bar
+      document.getElementById('progressCount').textContent = completedSkills;
+      document.getElementById('totalSkills').textContent = totalSkills;
+      const progressPercent = totalSkills > 0 ? Math.round((completedSkills / totalSkills) * 100) : 0;
+      document.getElementById('progressFill').style.width = `${progressPercent}%`;
+
+      const goalTitles = {
+        ml: 'ML Engineer',
+        frontend: 'Frontend Developer',
+        backend: 'Backend Developer',
+        fullstack: 'Full Stack Developer',
+        datascience: 'Data Scientist',
+        devops: 'DevOps Engineer',
+        mobile: 'Mobile Developer',
+        uiux: 'UI/UX Designer'
+      };
+
+      // Build continuous flow HTML
+      let html = `
+        <div class="flow-tree">
+          <!-- START: Goal Node -->
+          <div class="goal-node">
+            <div class="flow-node" onclick="openSkillPanel('${goal}')">
+              <div class="node-icon">🚀</div>
+              <div class="node-title">START</div>
+              <div class="node-status">${goalTitles[goal] || goal}</div>
+            </div>
+          </div>
+
+          <!-- Skill Columns by Category -->
+          <div class="flow-horizontal">
+      `;
+
+      // Group skills by category and create columns
+      const categories = {};
+      dynamicRoadmap.phases.forEach(phase => {
+        const cat = phase.category || phase.name;
+        if (!categories[cat]) {
+          categories[cat] = {
+            name: phase.name,
+            icon: phase.icon,
+            skills: []
+          };
+        }
+        phase.skills.forEach(skill => {
+          categories[cat].skills.push(skill);
+        });
+      });
+
+      // Create a column for each category
+      Object.entries(categories).forEach(([catKey, category]) => {
+        html += `
+          <div class="flow-column">
+            <div class="column-connector"></div>
+            <div class="category-label">${category.icon} ${category.name.replace(/Phase \d+: /, '')}</div>
+        `;
+
+        category.skills.forEach(skill => {
+          const isCompleted = progress.completedSkills.includes(skill.id);
+          const statusClass = isCompleted ? 'known' : skill.status;
+
+          html += `
+            <div class="flow-node ${statusClass}" onclick="openSkillPanel('${skill.id}')" data-skill="${skill.id}">
+              <div class="node-icon">${skillDescriptions[skill.id]?.icon || '📚'}</div>
+              <div class="node-title">${skill.name}</div>
+              <div class="node-status">${isCompleted ? 'Completed' : (skill.status === 'known' ? 'Known' : (skill.status === 'upgrade' ? 'Upgrade' : 'Learn'))}</div>
+            </div>
+          `;
+        });
+
+        html += `</div>`;
+      });
+
+      html += `
+          </div>
+
+          <!-- FINISH: Goal Achieved -->
+          <div class="finish-node">
+            <div class="flow-node" style="pointer-events: none;">
+              <div class="node-icon">🎯</div>
+              <div class="node-title">FINISH</div>
+              <div class="node-status">${goalTitles[goal] || goal} Ready!</div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('flowMap').innerHTML = html;
+    }
+
+    function openSkillPanel(skillId) {
+      const panel = document.getElementById('skillInfoPanel');
+      const overlay = document.getElementById('panelOverlay');
+      
+      // Get skill info
+      const skillInfo = skillDescriptions[skillId] || {
+        name: skillId.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+        icon: '📚',
+        description: 'This skill is essential for your career goal. Learning it will expand your capabilities and make you more competitive in the job market.',
+        whyLearn: 'Mastering this skill will help you complete projects, pass interviews, and contribute effectively to real-world teams.',
+        level: 'intermediate'
+      };
+
+      // Update panel content
+      document.getElementById('panelSkillIcon').textContent = skillInfo.icon;
+      document.getElementById('panelSkillName').textContent = skillInfo.name;
+      document.getElementById('panelDescription').textContent = skillInfo.description;
+      document.getElementById('panelWhyLearn').textContent = skillInfo.whyLearn;
+      
+      const levelBadge = document.getElementById('panelLevel');
+      levelBadge.innerHTML = `<span class="info-level-badge ${skillInfo.level}">${skillInfo.level.charAt(0).toUpperCase() + skillInfo.level.slice(1)}</span>`;
+
+      // Get resources
+      const resources = skillResources[skillId] || skillResources.default?.map(r => ({
+        ...r,
+        url: r.url + encodeURIComponent(skillInfo.name + ' tutorial')
+      })) || [];
+
+      const resourcesHtml = resources.map(r => `
+        <a href="${r.url}" target="_blank" rel="noopener noreferrer" class="info-resource-link">
+          <span>${resourceIcons[r.type] || '🔗'}</span>
+          <span>${r.name}</span>
+        </a>
+      `).join('');
+
+      document.getElementById('panelResources').innerHTML = resourcesHtml || '<p class="text-muted">No resources available</p>';
+
+      // Mark active node
+      document.querySelectorAll('.flow-node').forEach(n => n.classList.remove('active'));
+      const activeNode = document.querySelector(`[data-skill="${skillId}"]`);
+      if (activeNode) activeNode.classList.add('active');
+
+      // Open panel
+      panel.classList.add('open');
+      overlay.classList.add('open');
+    }
+
+    function closeSkillPanel() {
+      document.getElementById('skillInfoPanel').classList.remove('open');
+      document.getElementById('panelOverlay').classList.remove('open');
+      document.querySelectorAll('.flow-node').forEach(n => n.classList.remove('active'));
+    }
+
+    // Close on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeSkillPanel();
+    });
+  </script>
+</body>
+</html>

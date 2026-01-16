@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="InternPath - Turn learning chaos into career progress. Generate personalized roadmaps based on your goals.">
+  <title>InternPath - Your Career Roadmap Generator</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">IP</div>
+        <span>InternPath</span>
+      </a>
+      <div class="nav-links">
+        <a href="#features" class="nav-link">Features</a>
+        <a href="#analytics" class="nav-link">Analytics</a>
+        <a href="#roadmap" class="nav-link">Roadmaps</a>
+        <a href="onboarding.html" class="btn btn-primary">Get Started</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <!-- Video Background (for desktop/tablet) -->
+    <div class="hero-video-container">
+      <video autoplay muted loop playsinline class="hero-video">
+        <source src="hero-bg.mp4" type="video/mp4">
+      </video>
+    </div>
+    
+    <!-- Clickable overlay for the button in the video (desktop/tablet) -->
+    <a href="onboarding.html" class="hero-btn-overlay" aria-label="Start Learning"></a>
+    
+    <!-- Mobile Fallback Content (shown only on small screens) -->
+    <div class="hero-content-mobile">
+      <div class="hero-badge">
+        <span class="badge-icon">🔥</span>
+        No more tutorial hell.
+      </div>
+      <h1 class="hero-title">
+        <span class="text-gradient">Turn Learning Chaos</span><br>
+        <span class="text-gradient">Into Career Progress</span>
+      </h1>
+      <p class="hero-subtitle">
+        Follow battle-tested roadmaps. Check off real milestones. Track skills that matter.
+      </p>
+      <div class="hero-cta">
+        <a href="onboarding.html" class="btn btn-primary btn-lg btn-glow">
+          Start Your Journey
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Flow Section -->
+  <section id="features" class="section">
+    <div class="container">
+      <div class="text-center mb-xl">
+        <h2>One place to run your entire college life</h2>
+        <p class="text-muted mt-md">Everything connected, nothing isolated</p>
+      </div>
+      
+      <div class="features-flow stagger-children">
+        <div class="feature-step">
+          <div class="feature-step-icon">🎯</div>
+          <div class="feature-step-title">Daily Habits</div>
+          <div class="feature-step-desc">Track routines that build discipline.</div>
+        </div>
+        <div class="feature-arrow">→</div>
+        <div class="feature-step">
+          <div class="feature-step-icon">📚</div>
+          <div class="feature-step-title">Skill Learning</div>
+          <div class="feature-step-desc">Structured paths to mastery.</div>
+        </div>
+        <div class="feature-arrow">→</div>
+        <div class="feature-step">
+          <div class="feature-step-icon">📋</div>
+          <div class="feature-step-title">Sheet-Based Execution</div>
+          <div class="feature-step-desc">Organized tasks with clear progress.</div>
+        </div>
+        <div class="feature-arrow">→</div>
+        <div class="feature-step">
+          <div class="feature-step-icon">📊</div>
+          <div class="feature-step-title">Progress Analytics</div>
+          <div class="feature-step-desc">Data-driven insights on your journey.</div>
+        </div>
+        <div class="feature-arrow">→</div>
+        <div class="feature-step">
+          <div class="feature-step-icon">🔥</div>
+          <div class="feature-step-title">Long-Term Streaks</div>
+          <div class="feature-step-desc">Momentum that compounds over time.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Analytics Preview Section -->
+  <section id="analytics" class="section">
+    <div class="container">
+      <div class="text-center mb-xl">
+        <h2>Know exactly where you stand</h2>
+        <p class="text-muted mt-md">Data-driven growth, visualized in <span class="text-accent">real-time</span></p>
+      </div>
+
+      <div class="stats-grid">
+        <!-- Main Completion Card -->
+        <div class="card main-stat">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Completion Rate</div>
+              <div class="card-subtitle">+5% vs last month</div>
+            </div>
+            <div class="card-icon">🎯</div>
+          </div>
+          <div class="flex-center" style="padding: 20px 0;">
+            <div class="circular-progress" id="mainProgress">
+              <svg width="160" height="160" viewBox="0 0 160 160">
+                <circle class="track" cx="80" cy="80" r="70"></circle>
+                <circle class="fill" cx="80" cy="80" r="70" style="stroke-dashoffset: 132;"></circle>
+              </svg>
+              <div class="value">87%</div>
+            </div>
+          </div>
+          <p class="text-center text-muted">Target: 90% • Great progress!</p>
+        </div>
+
+        <!-- Streak Card -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Current Streak</div>
+            <div class="card-icon">🔥</div>
+          </div>
+          <div class="stat-value" style="font-size: 3rem;">23</div>
+          <div class="stat-label">days in a row</div>
+          <div class="mt-lg">
+            <span class="skill-badge easy">Personal Best!</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mini Stats -->
+      <div class="stats-mini-grid stagger-children">
+        <div class="card stat-card">
+          <div class="card-header">
+            <div class="card-title">Weekly Trend</div>
+            <span class="text-accent">📈</span>
+          </div>
+          <div class="stat-value positive">+12%</div>
+          <div class="bar-chart">
+            <div class="bar" style="height: 30%;"></div>
+            <div class="bar" style="height: 45%;"></div>
+            <div class="bar" style="height: 35%;"></div>
+            <div class="bar" style="height: 60%;"></div>
+            <div class="bar" style="height: 75%;"></div>
+            <div class="bar" style="height: 85%;"></div>
+            <div class="bar" style="height: 100%;"></div>
+          </div>
+          <div class="stat-label mt-md">Last 7 days</div>
+        </div>
+
+        <div class="card stat-card">
+          <div class="card-header">
+            <div class="card-title">Skills Mastered</div>
+            <span class="text-accent">🏆</span>
+          </div>
+          <div class="stat-value">5/12</div>
+          <div class="progress-bar mt-md">
+            <div class="progress-bar-fill" style="width: 42%;"></div>
+          </div>
+          <div class="stat-label mt-md">2 near completion</div>
+        </div>
+
+        <div class="card stat-card">
+          <div class="card-header">
+            <div class="card-title">Time Invested</div>
+            <span class="text-accent">⏱️</span>
+          </div>
+          <div class="stat-value">47h</div>
+          <div class="stat-label">This month</div>
+          <div class="mini-progress mt-md">
+            <span style="font-size: 12px; color: var(--text-secondary);">Learning: 23h</span>
+          </div>
+          <div class="mini-progress mt-sm">
+            <span style="font-size: 12px; color: var(--text-secondary);">Practice: 17h</span>
+          </div>
+          <div class="mini-progress mt-sm">
+            <span style="font-size: 12px; color: var(--text-secondary);">Review: 7h</span>
+          </div>
+        </div>
+
+        <div class="card stat-card">
+          <div class="card-header">
+            <div class="card-title">Top Area</div>
+            <span class="text-accent">⚡</span>
+          </div>
+          <div style="font-weight: 600; font-size: 1.1rem; margin-bottom: 8px;">Data Structures</div>
+          <div class="progress-bar">
+            <div class="progress-bar-fill" style="width: 82%;"></div>
+          </div>
+          <div class="stat-label mt-md">82% • +12% this week</div>
+        </div>
+      </div>
+
+      <div class="text-center mt-xl">
+        <a href="onboarding.html" class="btn btn-primary">View Full Analytics →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Roadmap Preview Section -->
+  <section id="roadmap" class="section">
+    <div class="container">
+      <div class="text-center mb-xl">
+        <h2>Structured execution, not scattered learning</h2>
+        <p class="text-muted mt-md">Follow proven paths designed by industry experts</p>
+      </div>
+
+      <div class="roadmap-container" style="max-width: 700px; margin: 0 auto;">
+        <div class="roadmap-header">
+          <div class="roadmap-title">
+            <div class="roadmap-title-icon">📚</div>
+            <div>
+              <div>Deep Learning Fundamentals</div>
+              <div class="text-muted" style="font-size: 0.875rem; font-weight: 400;">4/12 items completed</div>
+            </div>
+          </div>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </div>
+
+        <div class="roadmap-phase">
+          <div class="phase-header">
+            <div class="phase-info">
+              <span class="phase-icon">📁</span>
+              <span class="phase-name">Neural Network Architectures</span>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+          <div class="phase-content">
+            <div class="skill-item">
+              <div class="skill-checkbox checked"></div>
+              <div class="skill-info">
+                <div class="skill-name">Convolutional Neural Networks (CNNs)</div>
+                <div class="skill-meta">
+                  <span class="skill-badge hard">HARD</span>
+                  <span>⏱️ 45 min</span>
+                  <span>📚 2 resources</span>
+                </div>
+              </div>
+              <div class="skill-progress">
+                <div class="progress-bar">
+                  <div class="progress-bar-fill" style="width: 100%;"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="skill-item">
+              <div class="skill-checkbox"></div>
+              <div class="skill-info">
+                <div class="skill-name">Recurrent Neural Networks (RNNs)</div>
+                <div class="skill-meta">
+                  <span class="skill-badge hard">HARD</span>
+                  <span>⏱️ 30 min</span>
+                  <span>📚 2 resources</span>
+                </div>
+              </div>
+              <div class="skill-progress">
+                <div class="progress-bar">
+                  <div class="progress-bar-fill" style="width: 45%;"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="skill-item">
+              <div class="skill-checkbox"></div>
+              <div class="skill-info">
+                <div class="skill-name">Transformer Architecture</div>
+                <div class="skill-meta">
+                  <span class="skill-badge hard">HARD</span>
+                  <span>⏱️ 60 min</span>
+                  <span>📚 3 resources</span>
+                </div>
+              </div>
+              <div class="skill-progress">
+                <div class="progress-bar">
+                  <div class="progress-bar-fill" style="width: 0%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Grid Section -->
+  <section class="section">
+    <div class="container">
+      <div class="text-center mb-xl">
+        <h2>Everything tracked, nothing missed</h2>
+        <p class="text-muted mt-md">A comprehensive system for your college success</p>
+      </div>
+
+      <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+        <div class="card feature-card orange">
+          <div class="card-icon mb-md">🎯</div>
+          <h4 class="card-title">Habits</h4>
+          <p class="text-muted mt-sm">Build consistent routines that drive success.</p>
+        </div>
+
+        <div class="card feature-card purple">
+          <div class="card-icon mb-md">📚</div>
+          <h4 class="card-title">Skills</h4>
+          <p class="text-muted mt-sm">Track learning progress across multiple domains.</p>
+        </div>
+
+        <div class="card feature-card green">
+          <div class="card-icon mb-md">📋</div>
+          <h4 class="card-title">Sheets</h4>
+          <p class="text-muted mt-sm">Organized task execution with clear milestones.</p>
+        </div>
+
+        <div class="card feature-card yellow">
+          <div class="card-icon mb-md">🔥</div>
+          <h4 class="card-title">Streaks</h4>
+          <p class="text-muted mt-sm">Maintain momentum with streak protection.</p>
+        </div>
+
+        <div class="card feature-card blue">
+          <div class="card-icon mb-md">📊</div>
+          <h4 class="card-title">Analytics</h4>
+          <p class="text-muted mt-sm">Data driven insights into your performance.</p>
+        </div>
+
+        <div class="card feature-card red">
+          <div class="card-icon mb-md">🗺️</div>
+          <h4 class="card-title">Roadmaps</h4>
+          <p class="text-muted mt-sm">Strategic planning for long-term goals.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="section" style="padding-bottom: 100px;">
+    <div class="container text-center">
+      <h2 class="text-gradient">Ready to start your journey?</h2>
+      <p class="text-muted mt-md mb-xl" style="max-width: 500px; margin-left: auto; margin-right: auto;">
+        Join thousands of students who are turning their career dreams into reality with structured roadmaps.
+      </p>
+      <a href="onboarding.html" class="btn btn-primary btn-lg">
+        Create Your Roadmap
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer style="border-top: 1px solid var(--border); padding: 40px 0;">
+    <div class="container flex-between">
+      <div class="logo">
+        <div class="logo-icon">IP</div>
+        <span>InternPath</span>
+      </div>
+      <p class="text-muted" style="font-size: 14px;">© 2026 InternPath. Built for students, by students.</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+    "rewrites": [
+        {
+            "source": "/dashboard",
+            "destination": "/dashboard.html"
+        },
+        {
+            "source": "/onboarding",
+            "destination": "/onboarding.html"
+        },
+        {
+            "source": "/roadmap-detail",
+            "destination": "/roadmap-detail.html"
+        }
+    ]
+}
