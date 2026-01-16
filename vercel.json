@@ -1,16 +1,47 @@
 {
-    "rewrites": [
+    "version": 2,
+    "builds": [
         {
-            "source": "/dashboard",
-            "destination": "/dashboard.html"
+            "src": "backend/server.js",
+            "use": "@vercel/node"
         },
         {
-            "source": "/onboarding",
-            "destination": "/onboarding.html"
+            "src": "frontend/**",
+            "use": "@vercel/static"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/assets/(.*)",
+            "dest": "/frontend/assets/$1"
         },
         {
-            "source": "/roadmap-detail",
-            "destination": "/roadmap-detail.html"
+            "src": "/(.*\\.css)",
+            "dest": "/frontend/$1"
+        },
+        {
+            "src": "/(.*\\.js)",
+            "dest": "/frontend/$1"
+        },
+        {
+            "src": "/api/(.*)",
+            "dest": "/backend/server.js"
+        },
+        {
+            "src": "/dashboard",
+            "dest": "/frontend/dashboard.html"
+        },
+        {
+            "src": "/onboarding",
+            "dest": "/frontend/onboarding.html"
+        },
+        {
+            "src": "/roadmap-detail",
+            "dest": "/frontend/roadmap-detail.html"
+        },
+        {
+            "src": "/",
+            "dest": "/frontend/index.html"
         }
     ]
 }
