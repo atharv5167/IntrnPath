@@ -1,47 +1,50 @@
 {
-    "version": 2,
-    "builds": [
+    "cleanUrls": true,
+    "trailingSlash": false,
+    "rewrites": [
         {
-            "src": "backend/server.js",
-            "use": "@vercel/node"
+            "source": "/",
+            "destination": "/frontend/index.html"
         },
         {
-            "src": "frontend/**",
-            "use": "@vercel/static"
-        }
-    ],
-    "routes": [
-        {
-            "src": "/assets/(.*)",
-            "dest": "/frontend/assets/$1"
+            "source": "/index",
+            "destination": "/frontend/index.html"
         },
         {
-            "src": "/(.*\\.css)",
-            "dest": "/frontend/$1"
+            "source": "/dashboard",
+            "destination": "/frontend/dashboard.html"
         },
         {
-            "src": "/(.*\\.js)",
-            "dest": "/frontend/$1"
+            "source": "/onboarding",
+            "destination": "/frontend/onboarding.html"
         },
         {
-            "src": "/api/(.*)",
-            "dest": "/backend/server.js"
+            "source": "/roadmap-detail",
+            "destination": "/frontend/roadmap-detail.html"
         },
         {
-            "src": "/dashboard",
-            "dest": "/frontend/dashboard.html"
+            "source": "/styles.css",
+            "destination": "/frontend/styles.css"
         },
         {
-            "src": "/onboarding",
-            "dest": "/frontend/onboarding.html"
+            "source": "/app.js",
+            "destination": "/frontend/app.js"
         },
         {
-            "src": "/roadmap-detail",
-            "dest": "/frontend/roadmap-detail.html"
+            "source": "/assets/:path*",
+            "destination": "/frontend/assets/:path*"
         },
         {
-            "src": "/",
-            "dest": "/frontend/index.html"
+            "source": "/:path*.html",
+            "destination": "/frontend/:path*.html"
+        },
+        {
+            "source": "/:path*.css",
+            "destination": "/frontend/:path*.css"
+        },
+        {
+            "source": "/:path*.js",
+            "destination": "/frontend/:path*.js"
         }
     ]
 }
