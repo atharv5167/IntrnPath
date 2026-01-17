@@ -1,50 +1,23 @@
 {
+    "outputDirectory": "frontend",
     "cleanUrls": true,
     "trailingSlash": false,
     "rewrites": [
         {
-            "source": "/",
-            "destination": "/frontend/index.html"
-        },
-        {
-            "source": "/index",
-            "destination": "/frontend/index.html"
-        },
-        {
             "source": "/dashboard",
-            "destination": "/frontend/dashboard.html"
+            "destination": "/dashboard.html"
         },
         {
             "source": "/onboarding",
-            "destination": "/frontend/onboarding.html"
+            "destination": "/onboarding.html"
         },
         {
             "source": "/roadmap-detail",
-            "destination": "/frontend/roadmap-detail.html"
+            "destination": "/roadmap-detail.html"
         },
         {
-            "source": "/styles.css",
-            "destination": "/frontend/styles.css"
-        },
-        {
-            "source": "/app.js",
-            "destination": "/frontend/app.js"
-        },
-        {
-            "source": "/assets/:path*",
-            "destination": "/frontend/assets/:path*"
-        },
-        {
-            "source": "/:path*.html",
-            "destination": "/frontend/:path*.html"
-        },
-        {
-            "source": "/:path*.css",
-            "destination": "/frontend/:path*.css"
-        },
-        {
-            "source": "/:path*.js",
-            "destination": "/frontend/:path*.js"
+            "source": "/(.*)",
+            "destination": "/index.html"
         }
     ]
 }
