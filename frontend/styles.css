@@ -264,6 +264,13 @@ h6 {
   font-size: var(--font-size-lg);
 }
 
+.logo-img {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+}
+
 .nav-links {
   display: flex;
   align-items: center;
