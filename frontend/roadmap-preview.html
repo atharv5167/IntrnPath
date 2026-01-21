@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Review Your Learning Roadmap - InternPath">
+  <title>Your Learning Journey - InternPath</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="voice-assistant/voice-widget.css">
+  <link rel="icon" type="image/png" href="assets/Gemini_Generated_Image_vbuxp9vbuxp9vbux-removebg-preview.png">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      background: #0a0a0a;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: #fff;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Background nebula effect */
+    .bg-nebula {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background:
+        radial-gradient(ellipse 80% 60% at 30% 50%, rgba(180, 100, 50, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse 60% 40% at 70% 60%, rgba(120, 60, 20, 0.1) 0%, transparent 50%),
+        radial-gradient(ellipse 40% 30% at 20% 70%, rgba(200, 120, 60, 0.08) 0%, transparent 50%);
+      z-index: 0;
+    }
+
+    /* Header */
+    .header {
+      padding: 40px 60px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      font-size: 1.1rem;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    /* Roadmap Container */
+    .roadmap-wrapper {
+      position: relative;
+      z-index: 10;
+      padding: 20px 60px 60px;
+      min-height: 600px;
+    }
+
+    .roadmap-canvas {
+      position: relative;
+      width: 100%;
+      min-height: 550px;
+    }
+
+    /* SVG Connections */
+    .connections-svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .connection-path {
+      fill: none;
+      stroke: rgba(255, 107, 0, 0.5);
+      stroke-width: 2;
+    }
+
+    /* Node base styles */
+    .node {
+      position: absolute;
+      z-index: 2;
+    }
+
+    /* Start Node - Circular */
+    .start-node {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      border: 3px solid #ff6b00;
+      background: rgba(20, 15, 10, 0.9);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+      box-shadow: 0 0 30px rgba(255, 107, 0, 0.2);
+    }
+
+    .start-node-icon {
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+      color: #ff6b00;
+    }
+
+    .start-node-text {
+      font-size: 1rem;
+      font-weight: 600;
+      line-height: 1.3;
+      color: #ff8533;
+    }
+
+    /* Module Node */
+    .module-node {
+      background: rgba(25, 20, 15, 0.95);
+      border: 2px solid rgba(255, 107, 0, 0.4);
+      border-radius: 12px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 240px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .module-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #ff6b00 0%, #ff8533 100%);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .module-icon img,
+    .module-icon svg {
+      width: 24px;
+      height: 24px;
+      filter: brightness(0) invert(1);
+    }
+
+    .module-icon-emoji {
+      font-size: 1.4rem;
+    }
+
+    .module-content {
+      flex: 1;
+    }
+
+    .module-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 3px;
+      line-height: 1.2;
+    }
+
+    .module-subtitle {
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    /* End Node - Mastery */
+    .end-node {
+      background: rgba(25, 20, 15, 0.95);
+      border: 2px dashed rgba(255, 140, 0, 0.6);
+      border-radius: 12px;
+      padding: 20px 28px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 4px 20px rgba(255, 107, 0, 0.15);
+    }
+
+    .end-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #ff8c00 0%, #ffa500 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .end-icon-emoji {
+      font-size: 1.5rem;
+    }
+
+    .end-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    /* Title Node */
+    .title-node {
+      background: linear-gradient(135deg, #ff6b00 0%, #ff8533 100%);
+      border: 2px dashed rgba(255, 200, 100, 0.6);
+      border-radius: 12px;
+      padding: 16px 32px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(255, 107, 0, 0.3);
+    }
+
+    .title-node-text {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    /* Phase Node */
+    .phase-node {
+      background: linear-gradient(135deg, #e8a020 0%, #d4901a 100%);
+      border: 2px solid rgba(255, 180, 50, 0.8);
+      border-radius: 10px;
+      padding: 12px 24px;
+      text-align: center;
+      min-width: 120px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .phase-node-text {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    /* Skill Node */
+    .skill-node {
+      background: linear-gradient(135deg, #e07020 0%, #cc5a10 100%);
+      border: 2px solid rgba(255, 140, 50, 0.6);
+      border-radius: 8px;
+      padding: 10px 16px;
+      text-align: center;
+      min-width: 140px;
+      max-width: 180px;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .skill-node-text {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #fff;
+      line-height: 1.3;
+    }
+
+    /* Hierarchical container layout */
+    #nodesContainer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      padding-top: 20px;
+    }
+
+    .phases-row {
+      display: flex;
+      gap: 30px;
+      align-items: flex-start;
+      justify-content: center;
+      flex-wrap: nowrap;
+    }
+
+    .phase-column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .skills-column {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    /* Horizontal connections between phases */
+    .phase-connector {
+      width: 30px;
+      height: 2px;
+      background: #ff6b00;
+      align-self: center;
+      margin-top: 20px;
+    }
+
+    /* Vertical connector from phase to skills */
+    .vertical-connector {
+      width: 2px;
+      height: 20px;
+      background: #ff6b00;
+    }
+
+    /* Comment bubbles */
+    .comments-section {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 3;
+    }
+
+    .comment-bubble {
+      background: rgba(30, 25, 20, 0.95);
+      border: 1px solid rgba(255, 107, 0, 0.2);
+      border-radius: 10px;
+      padding: 12px 16px;
+      max-width: 280px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .comment-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .comment-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ff6b00, #ff8533);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .comment-name {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #ff8533;
+    }
+
+    .comment-text {
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.8);
+      line-height: 1.4;
+    }
+
+    /* Refinement Section */
+    .refinement-section {
+      max-width: 900px;
+      margin: 60px auto;
+      padding: 0 60px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .refinement-card {
+      background: rgba(20, 20, 20, 0.8);
+      border: 1px solid rgba(255, 107, 0, 0.2);
+      border-radius: 16px;
+      padding: 32px;
+      backdrop-filter: blur(10px);
+    }
+
+    .refinement-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .refinement-subtitle {
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 24px;
+    }
+
+    .comment-input {
+      width: 100%;
+      min-height: 100px;
+      background: rgba(40, 40, 40, 0.6);
+      border: 2px solid rgba(255, 107, 0, 0.2);
+      border-radius: 12px;
+      padding: 16px;
+      color: #fff;
+      font-size: 1rem;
+      font-family: inherit;
+      resize: vertical;
+      margin-bottom: 20px;
+    }
+
+    .comment-input:focus {
+      outline: none;
+      border-color: #ff6b00;
+    }
+
+    .comment-input::placeholder {
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: flex-end;
+    }
+
+    .btn {
+      padding: 14px 28px;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-secondary {
+      background: rgba(60, 60, 60, 0.8);
+      color: #fff;
+      border: 2px solid rgba(255, 107, 0, 0.3);
+    }
+
+    .btn-secondary:hover {
+      border-color: #ff6b00;
+      transform: translateY(-2px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #ff6b00, #ff8533);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(255, 107, 0, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 107, 0, 0.5);
+    }
+
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Toast Notification System */
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 420px;
+    }
+
+    .toast {
+      background: rgba(20, 20, 20, 0.95);
+      border-radius: 12px;
+      padding: 16px 20px;
+      border-left: 4px solid #ff6b00;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(10px);
+      animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .toast.toast-exit {
+      animation: slideOut 0.3s ease-in forwards;
+    }
+
+    .toast-success {
+      border-left-color: #22c55e;
+    }
+
+    .toast-error {
+      border-left-color: #ef4444;
+    }
+
+    .toast-info {
+      border-left-color: #3b82f6;
+    }
+
+    .toast-icon {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .toast-content {
+      flex: 1;
+    }
+
+    .toast-title {
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 4px;
+      font-size: 0.95rem;
+    }
+
+    .toast-message {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+
+    .toast-close {
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+      padding: 4px;
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+
+    .toast-close:hover {
+      color: #fff;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(100%);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes slideOut {
+      to {
+        opacity: 0;
+        transform: translateX(100%);
+      }
+    }
+
+    /* AI Interpretation Display */
+    .ai-interpretation {
+      background: rgba(255, 107, 0, 0.1);
+      border: 1px solid rgba(255, 107, 0, 0.3);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .ai-interpretation.visible {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .ai-interpretation-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: #ff8533;
+      margin-bottom: 6px;
+    }
+
+    .ai-interpretation-text {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Skill Visual Highlighting */
+    .skill-node.skill-added {
+      animation: skillAdded 0.6s ease;
+      box-shadow: 0 0 20px rgba(34, 197, 94, 0.5);
+      border-color: #22c55e !important;
+    }
+
+    .skill-node.skill-removed {
+      animation: skillRemoved 0.4s ease forwards;
+    }
+
+    .skill-node.skill-emphasized {
+      animation: skillEmphasized 0.6s ease;
+      box-shadow: 0 0 20px rgba(255, 107, 0, 0.6);
+    }
+
+    .skill-node.skill-skipped {
+      opacity: 0.5;
+      text-decoration: line-through;
+      border-style: dashed !important;
+    }
+
+    @keyframes skillAdded {
+      0% {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+
+      50% {
+        transform: scale(1.1);
+      }
+
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes skillRemoved {
+      to {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+    }
+
+    @keyframes skillEmphasized {
+
+      0%,
+      100% {
+        box-shadow: 0 0 20px rgba(255, 107, 0, 0.4);
+      }
+
+      50% {
+        box-shadow: 0 0 35px rgba(255, 107, 0, 0.8);
+      }
+    }
+
+    /* Change Summary Badge */
+    .changes-badge {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: #ff6b00;
+      color: white;
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .roadmap-canvas {
+        transform: scale(0.85);
+        transform-origin: top left;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        padding: 30px 20px;
+      }
+
+      .roadmap-wrapper {
+        padding: 20px;
+        overflow-x: auto;
+      }
+
+      .roadmap-canvas {
+        transform: scale(0.6);
+        transform-origin: top left;
+        min-width: 1100px;
+      }
+
+      .refinement-section {
+        padding: 0 20px;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Toast Container for elegant notifications -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Background nebula -->
+  <div class="bg-nebula"></div>
+
+  <!-- Header -->
+  <div class="header">
+    <h1>Your Learning Journey</h1>
+    <p>Track your progress & collaborate</p>
+  </div>
+
+  <!-- Roadmap -->
+  <div class="roadmap-wrapper">
+    <div class="roadmap-canvas" id="roadmapCanvas">
+      <!-- SVG for connection lines - drawn dynamically -->
+      <svg class="connections-svg" id="connectionsSvg"></svg>
+
+      <!-- Nodes will be generated dynamically based on user's goal -->
+      <div id="nodesContainer"></div>
+    </div>
+  </div>
+
+  <!-- Refinement Section -->
+  <div class="refinement-section">
+    <div class="refinement-card">
+      <h2 class="refinement-title">How does this look?</h2>
+      <p class="refinement-subtitle">Tell me in your own words what you'd like to change — I'll understand!</p>
+
+      <!-- AI Interpretation Display -->
+      <div class="ai-interpretation" id="aiInterpretation">
+        <div class="ai-interpretation-header">
+          <span>🤖</span>
+          <span>AI understood:</span>
+        </div>
+        <div class="ai-interpretation-text" id="aiInterpretationText"></div>
+      </div>
+
+      <textarea class="comment-input" id="userComment"
+        placeholder="Just tell me naturally, like: 'I already know HTML' or 'add some Docker stuff' or 'make it shorter' or 'focus more on backend'..."
+        maxlength="500"></textarea>
+
+      <div class="action-buttons">
+        <button class="btn btn-secondary" id="regenerateBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+            <path d="M21 3v5h-5" />
+            <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+            <path d="M3 21v-5h5" />
+          </svg>
+          <span>Regenerate Roadmap</span>
+        </button>
+        <button class="btn btn-primary" id="finalizeBtn">
+          <span>Finalize & Continue</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 6L9 17l-5-5" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="app.js"></script>
+  <script src="js/roadmap-ai.js"></script>
+  <script>
+    // Get user data from localStorage
+    function getUserData() {
+      const data = localStorage.getItem('internpath_user');
+      return data ? JSON.parse(data) : null;
+    }
+
+    // Get goal title display name
+    function getGoalTitle(goal) {
+      const titles = {
+        backend: 'Backend Developer',
+        fullstack: 'Full Stack Developer',
+        datascience: 'Data Scientist',
+        ml: 'ML Engineer',
+        devops: 'DevOps Engineer',
+        mobile: 'Mobile Developer',
+        uiux: 'UI/UX Designer'
+      };
+      return titles[goal] || 'Developer';
+    }
+
+    // Generate roadmap nodes and render them
+    function generateRoadmapPreview() {
+      const userData = getUserData();
+      const goal = userData?.goal || 'fullstack';
+
+      // Access roadmapTemplates - check for modified version in localStorage first
+      let template = null;
+
+      // Try to load modified template from localStorage
+      const storedModified = localStorage.getItem('internpath_modified_roadmap');
+      if (storedModified) {
+        try {
+          template = JSON.parse(storedModified);
+          window.modifiedRoadmapTemplate = template; // Keep in memory too
+        } catch (e) {
+          console.error('Error parsing stored roadmap:', e);
+        }
+      }
+
+      // Fall back to in-memory modified template
+      if (!template) {
+        template = window.modifiedRoadmapTemplate;
+      }
+
+      // Fall back to original template
+      if (!template) {
+        template = typeof roadmapTemplates !== 'undefined' ? roadmapTemplates[goal] : null;
+      }
+
+      if (!template) {
+        console.error('No roadmap template found for goal:', goal);
+        document.getElementById('nodesContainer').innerHTML = `
+          <div style="text-align: center; padding: 100px 20px; color: rgba(255,255,255,0.6);">
+            <div style="font-size: 3rem; margin-bottom: 20px;">🎯</div>
+            <div style="font-size: 1.2rem; margin-bottom: 10px;">Generating your roadmap...</div>
+            <div style="font-size: 0.9rem;">Please complete onboarding first to see your personalized roadmap.</div>
+            <a href="/onboarding.html" style="display: inline-block; margin-top: 20px; padding: 12px 24px; background: linear-gradient(135deg, #ff6b00, #ff8533); color: white; text-decoration: none; border-radius: 8px;">Go to Onboarding</a>
+          </div>
+        `;
+        return;
+      }
+
+      const container = document.getElementById('nodesContainer');
+      const phases = template.phases;
+
+      // Build hierarchical HTML structure
+      let html = '';
+
+      // 1. Title Node at top
+      html += `
+        <div class="title-node" id="title-node">
+          <div class="title-node-text">${template.title} Roadmap</div>
+        </div>
+      `;
+
+      // 2. Connector from title to phases row
+      html += `<div class="vertical-connector"></div>`;
+
+      // 3. Phases row with skills under each
+      html += `<div class="phases-row">`;
+
+      phases.forEach((phase, phaseIndex) => {
+        // Add horizontal connector between phases (except for first)
+        if (phaseIndex > 0) {
+          html += `<div class="phase-connector"></div>`;
+        }
+
+        // Phase column (phase node + skills)
+        html += `
+          <div class="phase-column">
+            <div class="phase-node" id="phase-${phaseIndex}">
+              <div class="phase-node-text">Phase ${phaseIndex + 1}</div>
+            </div>
+            <div class="vertical-connector"></div>
+            <div class="skills-column">
+        `;
+
+        // Add skill nodes under this phase
+        phase.skills.forEach((skill, skillIndex) => {
+          // Determine visual class based on skill status
+          let statusClass = '';
+          if (skill.skipped || skill.status === 'known') statusClass = 'skill-skipped';
+          else if (skill.emphasized) statusClass = 'skill-emphasized';
+          else if (skill.newlyAdded) statusClass = 'skill-added';
+
+          html += `
+            <div class="skill-node ${statusClass}" id="skill-${phaseIndex}-${skillIndex}" data-skill-id="${skill.id}">
+              <div class="skill-node-text">${skill.name}</div>
+            </div>
+          `;
+        });
+
+        html += `
+            </div>
+          </div>
+        `;
+      });
+
+      html += `</div>`;
+
+      container.innerHTML = html;
+
+      // Draw SVG connections
+      setTimeout(drawConnections, 100);
+    }
+
+    // Draw connection lines for hierarchical layout
+    function drawConnections() {
+      const svg = document.getElementById('connectionsSvg');
+      const canvas = document.getElementById('roadmapCanvas');
+
+      // Clear existing
+      svg.innerHTML = '';
+
+      // Set SVG size
+      svg.style.width = canvas.offsetWidth + 'px';
+      svg.style.height = canvas.offsetHeight + 'px';
+
+      // Get title node
+      const titleNode = document.getElementById('title-node');
+      if (!titleNode) return;
+
+      const titleRect = titleNode.getBoundingClientRect();
+      const canvasRect = canvas.getBoundingClientRect();
+
+      // Title center bottom
+      const titleCenterX = titleNode.offsetLeft + titleNode.offsetWidth / 2;
+      const titleBottomY = titleNode.offsetTop + titleNode.offsetHeight;
+
+      // Draw line from title to first phase row
+      const phasesRow = document.querySelector('.phases-row');
+      if (phasesRow) {
+        const firstPhase = document.getElementById('phase-0');
+        if (firstPhase) {
+          const phaseTopY = firstPhase.offsetTop;
+          const phaseCenterX = firstPhase.offsetLeft + firstPhase.offsetWidth / 2;
+
+          // Vertical line from title
+          const path1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          path1.setAttribute('class', 'connection-path');
+          path1.setAttribute('d', `M ${titleCenterX} ${titleBottomY} L ${titleCenterX} ${titleBottomY + 15} L ${phaseCenterX} ${titleBottomY + 15} L ${phaseCenterX} ${phaseTopY}`);
+          svg.appendChild(path1);
+        }
+      }
+
+      // Draw horizontal connections between phases
+      const phaseNodes = document.querySelectorAll('[id^="phase-"]');
+      phaseNodes.forEach((phase, index) => {
+        if (index < phaseNodes.length - 1) {
+          const nextPhase = phaseNodes[index + 1];
+          const fromX = phase.offsetLeft + phase.offsetWidth;
+          const fromY = phase.offsetTop + phase.offsetHeight / 2;
+          const toX = nextPhase.offsetLeft;
+          const toY = nextPhase.offsetTop + nextPhase.offsetHeight / 2;
+
+          const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          path.setAttribute('class', 'connection-path');
+          path.setAttribute('d', `M ${fromX} ${fromY} L ${toX} ${toY}`);
+          svg.appendChild(path);
+        }
+      });
+    }
+
+    // Initialize on page load
+    window.addEventListener('load', () => {
+      generateRoadmapPreview();
+    });
+
+    window.addEventListener('resize', drawConnections);
+
+    // Initialize Groq AI for roadmap modifications
+    const GROQ_API_KEY = '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';
+    const roadmapAI = new RoadmapAI(GROQ_API_KEY);
+
+    // Toast notification system
+    function showToast(type, title, message, duration = 5000) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+
+      const icons = {
+        success: '✅',
+        error: '❌',
+        info: 'ℹ️',
+        ai: '🤖'
+      };
+
+      toast.innerHTML = `
+        <span class="toast-icon">${icons[type] || '📢'}</span>
+        <div class="toast-content">
+          <div class="toast-title">${title}</div>
+          <div class="toast-message">${message}</div>
+        </div>
+        <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+      `;
+
+      container.appendChild(toast);
+
+      // Auto remove
+      setTimeout(() => {
+        toast.classList.add('toast-exit');
+        setTimeout(() => toast.remove(), 300);
+      }, duration);
+
+      return toast;
+    }
+
+    // Show AI interpretation in the UI
+    function showAIInterpretation(text, reasoning) {
+      const container = document.getElementById('aiInterpretation');
+      const textEl = document.getElementById('aiInterpretationText');
+
+      let content = text;
+      if (reasoning) {
+        content += `<br><small style="opacity: 0.7; display: block; margin-top: 6px;">💭 ${reasoning}</small>`;
+      }
+
+      textEl.innerHTML = content;
+      container.classList.add('visible');
+    }
+
+    function hideAIInterpretation() {
+      document.getElementById('aiInterpretation').classList.remove('visible');
+    }
+
+    // Regenerate button handler with Groq AI integration
+    document.getElementById('regenerateBtn').addEventListener('click', async function () {
+      const comment = document.getElementById('userComment').value.trim();
+
+      if (!comment) {
+        showToast('info', 'Say something!', 'Tell me what you\'d like to change about your roadmap in your own words.');
+        return;
+      }
+
+      const btn = this;
+      const btnText = btn.querySelector('span');
+      const originalText = btnText.textContent;
+
+      btn.disabled = true;
+      btnText.textContent = 'AI Analyzing...';
+      hideAIInterpretation();
+
+      const spinnerDiv = document.createElement('div');
+      spinnerDiv.className = 'spinner';
+      btn.insertBefore(spinnerDiv, btn.firstChild);
+
+      try {
+        // Get user data and current template
+        const userData = getUserData();
+        const goal = userData?.goal || 'fullstack';
+
+        // Get current template (modified or original)
+        let template;
+        if (window.modifiedRoadmapTemplate) {
+          template = window.modifiedRoadmapTemplate;
+        } else {
+          template = typeof roadmapTemplates !== 'undefined' ? roadmapTemplates[goal] : null;
+        }
+
+        if (!template) {
+          throw new Error('Template not found');
+        }
+
+        // Create a modified copy
+        const modifiedTemplate = JSON.parse(JSON.stringify(template));
+
+        // Send to Groq AI for understanding
+        btnText.textContent = 'Understanding...';
+        const aiResponse = await roadmapAI.parseUserFeedback(comment, modifiedTemplate, goal);
+
+        // Show what AI understood
+        if (aiResponse.interpretation) {
+          showAIInterpretation(aiResponse.interpretation, aiResponse.reasoning);
+        }
+
+        let changesLog;
+
+        if (aiResponse.understood && !aiResponse.error) {
+          // AI understood - apply AI-suggested changes
+          btnText.textContent = 'Applying changes...';
+          changesLog = roadmapAI.applyChanges(modifiedTemplate, aiResponse);
+          changesLog.usedAI = true;
+        } else {
+          // AI couldn't understand - show helpful message
+          btn.querySelector('.spinner')?.remove();
+          btnText.textContent = originalText;
+          btn.disabled = false;
+
+          const suggestion = aiResponse.suggestion || 'Try being more specific about what skills you want to add, remove, or modify.';
+          showToast('info', 'Could not understand', suggestion, 6000);
+          return;
+        }
+
+        // Calculate total changes (or check if roadmap was replaced)
+        const totalChanges = (changesLog.added?.length || 0) +
+          (changesLog.removed?.length || 0) +
+          (changesLog.emphasized?.length || 0) +
+          (changesLog.skipped?.length || 0) +
+          (changesLog.reordered?.length || 0);
+
+        // If roadmap was replaced completely, that counts as a change
+        const hasChanges = totalChanges > 0 || changesLog.replaced === true;
+
+        if (!hasChanges) {
+          btn.querySelector('.spinner')?.remove();
+          btnText.textContent = originalText;
+          btn.disabled = false;
+          showToast('info', 'No changes needed', aiResponse.interpretation || 'The roadmap already matches what you described!', 5000);
+          return;
+        }
+
+        // Store modified template
+        window.modifiedRoadmapTemplate = modifiedTemplate;
+        localStorage.setItem('internpath_modified_roadmap', JSON.stringify(modifiedTemplate));
+
+        // Regenerate display
+        generateRoadmapPreview();
+
+        btn.querySelector('.spinner')?.remove();
+        btnText.textContent = originalText;
+        btn.disabled = false;
+
+        // Show success toasts for each type of change
+        // Special message for complete roadmap replacement (stack switch)
+        if (changesLog.replaced) {
+          const skillCount = changesLog.added?.length || 0;
+          showToast('success', '🔄 Roadmap Regenerated!', `Complete stack switch: ${skillCount} skills across all phases.`, 5000);
+        } else if (changesLog.added?.length > 0) {
+          const names = changesLog.added.map(s => typeof s === 'object' ? s.name : s).join(', ');
+          showToast('success', `Added ${changesLog.added.length} skill(s)`, names, 4000);
+        }
+
+        if (changesLog.removed?.length > 0) {
+          showToast('success', `Removed ${changesLog.removed.length} skill(s)`, changesLog.removed.join(', '), 4000);
+        }
+
+        if (changesLog.emphasized?.length > 0) {
+          showToast('success', `Emphasized ${changesLog.emphasized.length} skill(s)`, changesLog.emphasized.join(', '), 4000);
+        }
+
+        if (changesLog.skipped?.length > 0) {
+          showToast('success', `Marked ${changesLog.skipped.length} as known`, changesLog.skipped.join(', '), 4000);
+        }
+
+        if (changesLog.reordered?.length > 0) {
+          showToast('success', `Reordered ${changesLog.reordered.length} skill(s)`, changesLog.reordered.join(', '), 4000);
+        }
+
+        // Clear input
+        document.getElementById('userComment').value = '';
+
+        // Show main success toast after a brief delay
+        setTimeout(() => {
+          showToast('ai', 'Roadmap Updated!', 'Review the changes and click "Finalize & Continue" when ready.', 6000);
+        }, 500);
+
+      } catch (error) {
+        console.error('Regeneration error:', error);
+        btn.querySelector('.spinner')?.remove();
+        btnText.textContent = originalText;
+        btn.disabled = false;
+        showToast('error', 'Something went wrong', 'Please try again. If the problem persists, try rephrasing your request.', 5000);
+      }
+    });
+
+    // Helper function to extract keywords from user comment
+    function extractKeywords(comment) {
+      const techKeywords = [
+        'react', 'angular', 'vue', 'javascript', 'typescript', 'python', 'java',
+        'node', 'express', 'django', 'flask', 'spring', 'docker', 'kubernetes',
+        'aws', 'azure', 'gcp', 'sql', 'nosql', 'mongodb', 'postgresql',
+        'testing', 'tdd', 'ci/cd', 'devops', 'git', 'api', 'rest', 'graphql',
+        'frontend', 'backend', 'fullstack', 'database', 'deployment', 'cloud'
+      ];
+
+      const found = [];
+      techKeywords.forEach(keyword => {
+        if (comment.toLowerCase().includes(keyword)) {
+          found.push(keyword);
+        }
+      });
+      return found;
+    }
+
+    function addSkillsForKeyword(template, keyword) {
+      const skillMap = {
+        // Frontend Frameworks
+        'react': { name: 'Advanced React Patterns', difficulty: 'hard', duration: '5 hours', resources: 4, core: false },
+        'angular': { name: 'Angular Framework', difficulty: 'hard', duration: '6 hours', resources: 4, core: false },
+        'vue': { name: 'Vue.js Framework', difficulty: 'medium', duration: '5 hours', resources: 3, core: false },
+
+        // Languages
+        'javascript': { name: 'Advanced JavaScript', difficulty: 'medium', duration: '4 hours', resources: 3, core: true },
+        'typescript': { name: 'TypeScript Advanced', difficulty: 'medium', duration: '4 hours', resources: 3, core: false },
+        'python': { name: 'Python Fundamentals', difficulty: 'medium', duration: '5 hours', resources: 4, core: true },
+        'java': { name: 'Java Development', difficulty: 'hard', duration: '6 hours', resources: 4, core: false },
+        'go': { name: 'Go Fundamentals', difficulty: 'medium', duration: '5 hours', resources: 4, core: false },
+        'golang': { name: 'Go Fundamentals', difficulty: 'medium', duration: '5 hours', resources: 4, core: false },
+
+        // JavaScript Backend Frameworks
+        'node': { name: 'Node.js & Express', difficulty: 'medium', duration: '5 hours', resources: 4, core: true },
+        'nodejs': { name: 'Node.js & Express', difficulty: 'medium', duration: '5 hours', resources: 4, core: true },
+        'express': { name: 'Express.js Framework', difficulty: 'medium', duration: '3 hours', resources: 3, core: false },
+        'nestjs': { name: 'NestJS Framework', difficulty: 'hard', duration: '5 hours', resources: 4, core: false },
+        'fastify': { name: 'Fastify Framework', difficulty: 'medium', duration: '3 hours', resources: 3, core: false },
+        'prisma': { name: 'Prisma ORM', difficulty: 'medium', duration: '4 hours', resources: 3, core: false },
+
+        // Python Backend Frameworks
+        'django': { name: 'Django Framework', difficulty: 'hard', duration: '6 hours', resources: 4, core: true },
+        'flask': { name: 'Flask Microframework', difficulty: 'medium', duration: '4 hours', resources: 3, core: false },
+        'fastapi': { name: 'FastAPI Framework', difficulty: 'medium', duration: '4 hours', resources: 3, core: false },
+        'sqlalchemy': { name: 'SQLAlchemy ORM', difficulty: 'medium', duration: '4 hours', resources: 3, core: false },
+        'celery': { name: 'Celery Task Queue', difficulty: 'medium', duration: '3 hours', resources: 3, core: false },
+
+        // Java Backend Frameworks
+        'spring': { name: 'Spring Boot', difficulty: 'hard', duration: '6 hours', resources: 4, core: false },
+        'springboot': { name: 'Spring Boot', difficulty: 'hard', duration: '6 hours', resources: 4, core: false },
+        'hibernate': { name: 'Hibernate ORM', difficulty: 'hard', duration: '5 hours', resources: 4, core: false },
+
+        // Go Backend Frameworks
+        'gin': { name: 'Gin Web Framework', difficulty: 'medium', duration: '4 hours', resources: 3, core: false },
+        'echo': { name: 'Echo Framework', difficulty: 'medium', duration: '4 hours', resources: 3, core: false },
+        'gorm': { name: 'GORM ORM', difficulty: 'medium', duration: '3 hours', resources: 3, core: false },
+
+        // DevOps & Cloud
+        'docker': { name: 'Docker & Containerization', difficulty: 'hard', duration: '5 hours', resources: 4, core: false },
+        'kubernetes': { name: 'Kubernetes Orchestration', difficulty: 'hard', duration: '6 hours', resources: 4, core: false },
+        'aws': { name: 'AWS Cloud Services', difficulty: 'hard', duration: '6 hours', resources: 5, core: false },
+        'azure': { name: 'Microsoft Azure', difficulty: 'hard', duration: '6 hours', resources: 4, core: false },
+        'gcp': { name: 'Google Cloud Platform', difficulty: 'hard', duration: '6 hours', resources: 4, core: false },
+        'ci/cd': { name: 'CI/CD Pipelines', difficulty: 'medium', duration: '4 hours', resources: 3, core: false },
+        'devops': { name: 'DevOps Practices', difficulty: 'hard', duration: '5 hours', resources: 4, core: false },
+
+        // Databases
+        'sql': { name: 'Advanced SQL', difficulty: 'medium', duration: '4 hours', resources: 3, core: true },
+        'nosql': { name: 'NoSQL Databases', difficulty: 'medium', duration: '4 hours', resources: 3, core: false },
+        'mongodb': { name: 'MongoDB Database', difficulty: 'medium', duration: '4 hours', resources: 3, core: false },
+        'postgresql': { name: 'PostgreSQL Database', difficulty: 'medium', duration: '4 hours', resources: 3, core: false },
+        'mysql': { name: 'MySQL Database', difficulty: 'medium', duration: '4 hours', resources: 3, core: false },
+        'redis': { name: 'Redis Caching', difficulty: 'medium', duration: '3 hours', resources: 3, core: false },
+
+        // Testing & Quality
+        'testing': { name: 'Unit Testing & TDD', difficulty: 'medium', duration: '4 hours', resources: 3, core: true },
+        'tdd': { name: 'Test-Driven Development', difficulty: 'medium', duration: '4 hours', resources: 3, core: true },
+        'jest': { name: 'Jest Testing', difficulty: 'medium', duration: '3 hours', resources: 3, core: false },
+        'pytest': { name: 'Pytest Testing', difficulty: 'medium', duration: '3 hours', resources: 3, core: false },
+
+        // APIs
+        'api': { name: 'RESTful API Design', difficulty: 'medium', duration: '4 hours', resources: 3, core: true },
+        'rest': { name: 'REST API Best Practices', difficulty: 'medium', duration: '3 hours', resources: 3, core: false },
+        'graphql': { name: 'GraphQL API Design', difficulty: 'hard', duration: '4 hours', resources: 3, core: false },
+
+        // Version Control
+        'git': { name: 'Advanced Git & GitHub', difficulty: 'medium', duration: '3 hours', resources: 3, core: true },
+
+        // General Areas
+        'frontend': { name: 'Frontend Best Practices', difficulty: 'medium', duration: '4 hours', resources: 3, core: false },
+        'backend': { name: 'Backend Architecture', difficulty: 'hard', duration: '5 hours', resources: 4, core: false },
+        'fullstack': { name: 'Full Stack Integration', difficulty: 'hard', duration: '5 hours', resources: 4, core: false },
+        'database': { name: 'Database Design', difficulty: 'medium', duration: '4 hours', resources: 3, core: true },
+        'deployment': { name: 'Deployment Strategies', difficulty: 'medium', duration: '4 hours', resources: 3, core: false },
+        'cloud': { name: 'Cloud Architecture', difficulty: 'hard', duration: '5 hours', resources: 4, core: false },
+        'authentication': { name: 'Authentication (JWT, OAuth)', difficulty: 'hard', duration: '4 hours', resources: 3, core: true },
+        'microservices': { name: 'Microservices Architecture', difficulty: 'hard', duration: '5 hours', resources: 4, core: false }
+      };
+
+
+      if (skillMap[keyword]) {
+        const skillName = skillMap[keyword].name;
+        // Check if skill already exists
+        const targetPhase = template.phases[Math.min(2, template.phases.length - 1)];
+        if (targetPhase.skills.find(s => s.name === skillName)) {
+          return { added: false, alreadyExists: true, skillName };
+        }
+        // Add to appropriate phase
+        targetPhase.skills.push({
+          id: keyword + '_advanced',
+          ...skillMap[keyword]
+        });
+        return { added: true, alreadyExists: false, skillName };
+      }
+      return { added: false, alreadyExists: false, skillName: null };
+    }
+
+    // Helper function to remove skills for a keyword
+    function removeSkillsForKeyword(template, keyword) {
+      const removed = [];
+      template.phases.forEach(phase => {
+        const beforeCount = phase.skills.length;
+        const removedSkills = phase.skills.filter(skill =>
+          skill.name.toLowerCase().includes(keyword) ||
+          skill.id.toLowerCase().includes(keyword)
+        );
+        removed.push(...removedSkills.map(s => s.name));
+        phase.skills = phase.skills.filter(skill =>
+          !skill.name.toLowerCase().includes(keyword) &&
+          !skill.id.toLowerCase().includes(keyword)
+        );
+      });
+      return removed;
+    }
+
+    // Helper function to emphasize skills for a keyword
+    function emphasizeSkillsForKeyword(template, keyword) {
+      const emphasized = [];
+      template.phases.forEach(phase => {
+        phase.skills.forEach(skill => {
+          if (skill.name.toLowerCase().includes(keyword) || skill.id.toLowerCase().includes(keyword)) {
+            skill.core = true;
+            skill.duration = (parseInt(skill.duration) + 2) + ' hours';
+            emphasized.push(skill.name);
+          }
+        });
+      });
+      return emphasized;
+    }
+
+    // Finalize button handler
+    document.getElementById('finalizeBtn').addEventListener('click', async function () {
+      const btn = this;
+      const btnText = btn.querySelector('span');
+
+      btn.disabled = true;
+      btnText.textContent = 'Finalizing...';
+
+      // Mark onboarding as complete and redirect
+      const userData = getUserData();
+      if (userData) {
+        userData.roadmapFinalized = true;
+        localStorage.setItem('internpath_user', JSON.stringify(userData));
+      }
+
+      setTimeout(() => {
+        window.location.href = 'dashboard.html';
+      }, 1000);
+    });
+  </script>
+
+  <!-- Voice Assistant Widget -->
+  <div class="voice-assistant-widget" id="voiceWidget">
+    <div class="voice-conversation-panel" id="voicePanel">
+      <div class="voice-panel-header">
+        <div class="voice-panel-title">
+          <span>🎤</span>
+          <span>AI Assistant</span>
+        </div>
+        <button class="voice-panel-close" onclick="toggleVoicePanel()">✕</button>
+      </div>
+      <div class="voice-messages" id="voiceMessages"></div>
+      <div class="voice-status" id="voiceStatus"></div>
+    </div>
+    <button class="voice-button" id="voiceButton" title="Talk to AI Assistant">
+      <img src="assets/Voice Assistent.png" alt="Voice Assistant" class="mic-icon">
+    </button>
+  </div>
+
+  <!-- Voice Assistant Initialization -->
+  <script type="module">
+    import { InternPathVoiceAssistant } from './voice-assistant/index.js';
+
+    // Check browser support
+    const support = InternPathVoiceAssistant.checkSupport();
+    if (!support.isSupported) {
+      console.warn('Voice assistant not fully supported in this browser');
+      document.getElementById('voiceButton').style.opacity = '0.5';
+      document.getElementById('voiceButton').title = 'Voice features not supported in this browser. Please use Chrome, Edge, or Safari.';
+    }
+
+    // Get auth token from localStorage
+    const authToken = localStorage.getItem('internpath_token');
+
+    // Initialize voice assistant
+    const voiceAssistant = new InternPathVoiceAssistant({
+      groqApiKey: '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',
+      authToken: authToken,
+      apiBaseUrl: window.location.origin + '/api',
+      useMockData: !authToken, // Use mock data if not logged in
+      autoSpeak: true
+    });
+
+    // UI Elements
+    const voiceButton = document.getElementById('voiceButton');
+    const voicePanel = document.getElementById('voicePanel');
+    const voiceMessages = document.getElementById('voiceMessages');
+    const voiceStatus = document.getElementById('voiceStatus');
+
+    // Toggle conversation panel
+    window.toggleVoicePanel = function () {
+      voicePanel.classList.toggle('active');
+    };
+
+    // Voice button click handler
+    voiceButton.addEventListener('click', () => {
+      if (!support.isSupported) {
+        alert('Voice features are not supported in this browser. Please use Chrome, Edge, or Safari.');
+        return;
+      }
+      voiceAssistant.toggle();
+    });
+
+    // State change handler
+    voiceAssistant.onStateChange = (newState, oldState) => {
+      voiceButton.className = 'voice-button ' + newState;
+
+      const statusText = {
+        'idle': '',
+        'listening': '🎤 Listening...',
+        'processing': '⏳ Thinking...',
+        'speaking': '🔊 Speaking...',
+        'error': '❌ Error occurred'
+      };
+      voiceStatus.textContent = statusText[newState] || '';
+
+      if (newState !== 'idle' && !voicePanel.classList.contains('active')) {
+        voicePanel.classList.add('active');
+      }
+    };
+
+    // Transcript handler
+    voiceAssistant.onTranscript = (text) => {
+      addMessage('user', text);
+    };
+
+    // Interim transcript handler
+    voiceAssistant.onInterimTranscript = (text) => {
+      let interimMsg = document.querySelector('.voice-message.interim');
+      if (!interimMsg) {
+        interimMsg = document.createElement('div');
+        interimMsg.className = 'voice-message user interim';
+        voiceMessages.appendChild(interimMsg);
+      }
+      interimMsg.textContent = text;
+      scrollToBottom();
+    };
+
+    // Response handler
+    voiceAssistant.onResponse = (text) => {
+      const interimMsg = document.querySelector('.voice-message.interim');
+      if (interimMsg) interimMsg.remove();
+      addMessage('assistant', text);
+    };
+
+    // Error handler
+    voiceAssistant.onError = ({ code, message }) => {
+      console.error('Voice Assistant Error:', code, message);
+      voiceStatus.textContent = '❌ ' + message;
+
+      if (code === 'not-allowed') {
+        alert('Microphone access denied. Please allow microphone access to use voice features.');
+      } else if (code === 'no-speech') {
+        voiceStatus.textContent = '🎤 No speech detected. Try again.';
+      }
+    };
+
+    function addMessage(role, text) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'voice-message ' + role;
+      messageDiv.textContent = text;
+      voiceMessages.appendChild(messageDiv);
+      scrollToBottom();
+    }
+
+    function scrollToBottom() {
+      voiceMessages.scrollTop = voiceMessages.scrollHeight;
+    }
+
+    window.voiceAssistant = voiceAssistant;
+  </script>
+</body>
+
+</html>

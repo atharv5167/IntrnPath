@@ -557,8 +557,8 @@ function calculateRoadmapSchedule(goal, weeklyHours = 10) {
   const progress = getProgress();
   const userSkills = userData?.currentSkills || {};
 
-  // Get dynamic roadmap
-  const dynamicRoadmap = generateDynamicRoadmap(goal, userSkills);
+  // Get dynamic roadmap (includes user modifications from preview)
+  const dynamicRoadmap = getUserRoadmap(goal, userSkills);
   if (!dynamicRoadmap) return null;
 
   // Collect all uncompleted skills with their hours
@@ -669,6 +669,57 @@ function getCurrentWeekNumber() {
   const today = new Date();
   const daysDiff = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
   return Math.max(1, Math.min(schedule.weeks.length, Math.floor(daysDiff / 7) + 1));
+}
+
+// ============================================
+// Get User's Roadmap (with modifications from preview)
+// This function ensures any modifications made in roadmap-preview
+// are reflected across the entire app (dashboard, roadmap-detail, etc.)
+// ============================================
+function getUserRoadmap(goal, userSkills) {
+  // First check if user has a modified roadmap from the preview page
+  const storedModified = localStorage.getItem('internpath_modified_roadmap');
+
+  if (storedModified) {
+    try {
+      const modifiedTemplate = JSON.parse(storedModified);
+
+      // Ensure it's a valid roadmap structure
+      if (modifiedTemplate && modifiedTemplate.phases && modifiedTemplate.phases.length > 0) {
+        console.log('Using modified roadmap from preview');
+
+        // Merge with dynamic analysis to preserve user skill status
+        const progress = getProgress();
+
+        modifiedTemplate.phases.forEach(phase => {
+          phase.skills.forEach(skill => {
+            // Mark completed skills
+            if (progress.completedSkills.includes(skill.id)) {
+              skill.status = 'known';
+            }
+          });
+        });
+
+        return {
+          title: modifiedTemplate.title,
+          phases: modifiedTemplate.phases,
+          analysis: null, // Modified templates don't have full analysis
+          isModified: true
+        };
+      }
+    } catch (e) {
+      console.error('Error parsing modified roadmap:', e);
+    }
+  }
+
+  // Fall back to dynamic generation
+  return generateDynamicRoadmap(goal, userSkills);
+}
+
+// Helper to clear modified roadmap (for reset functionality)
+function clearModifiedRoadmap() {
+  localStorage.removeItem('internpath_modified_roadmap');
+  window.modifiedRoadmapTemplate = null;
 }
 
 // ============================================
@@ -1098,8 +1149,8 @@ function generateRoadmap(goal) {
   const userData = getUserData();
   const userSkills = userData?.currentSkills || {};
 
-  // Generate dynamic roadmap based on user's skills
-  const dynamicRoadmap = generateDynamicRoadmap(goal, userSkills);
+  // Generate dynamic roadmap based on user's skills (includes preview modifications)
+  const dynamicRoadmap = getUserRoadmap(goal, userSkills);
   if (!dynamicRoadmap) return;
 
   const container = document.getElementById('roadmapContainer');
@@ -1766,8 +1817,8 @@ function generateDetailedRoadmap() {
   const userSkills = userData.currentSkills || {};
   const goal = userData.goal;
 
-  // Generate dynamic roadmap
-  const dynamicRoadmap = generateDynamicRoadmap(goal, userSkills);
+  // Generate dynamic roadmap (includes user modifications from preview)
+  const dynamicRoadmap = getUserRoadmap(goal, userSkills);
   if (!dynamicRoadmap) return;
 
   const progress = getProgress();
@@ -2246,8 +2297,8 @@ function updateTodaysFocus() {
   // Get scheduled skills for this week
   const scheduledSkills = getScheduledTasksForDate(selectedDate);
 
-  // Also get dynamic roadmap for next skill suggestion
-  const dynamicRoadmap = generateDynamicRoadmap(userData.goal, userData.currentSkills || {});
+  // Also get dynamic roadmap for next skill suggestion (includes preview modifications)
+  const dynamicRoadmap = getUserRoadmap(userData.goal, userData.currentSkills || {});
 
   // Find all uncompleted skills from roadmap
   let allUncompletedSkills = [];

@@ -1,0 +1,297 @@
+/**
+ * Voice Assistant Widget Styles
+ * Floating voice button with state animations
+ */
+
+/* Voice Widget Container */
+.voice-assistant-widget {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+/* Voice Button */
+.voice-button {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, #FF6B00 0%, #FF8533 100%);
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(255, 107, 0, 0.4);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  position: relative;
+  overflow: hidden;
+}
+
+.voice-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 30px rgba(255, 107, 0, 0.6);
+}
+
+.voice-button:active {
+  transform: scale(0.95);
+}
+
+/* Button States */
+.voice-button.listening {
+  background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+  animation: pulse 1.5s infinite;
+}
+
+.voice-button.processing {
+  background: linear-gradient(135deg, #FF6B00 0%, #FF8533 100%);
+  animation: spin 1s linear infinite;
+}
+
+.voice-button.speaking {
+  background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+  animation: wave 1s ease-in-out infinite;
+}
+
+.voice-button.error {
+  background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+  animation: shake 0.5s;
+}
+
+/* Animations */
+@keyframes pulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  }
+
+  50% {
+    box-shadow: 0 0 0 20px rgba(239, 68, 68, 0);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes wave {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes shake {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-5px);
+  }
+
+  75% {
+    transform: translateX(5px);
+  }
+}
+
+/* Conversation Panel */
+.voice-conversation-panel {
+  background: rgba(17, 17, 17, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 107, 0, 0.3);
+  border-radius: 16px;
+  padding: 20px;
+  max-width: 350px;
+  max-height: 400px;
+  overflow-y: auto;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  display: none;
+}
+
+.voice-conversation-panel.active {
+  display: block;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Panel Header */
+.voice-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 107, 0, 0.2);
+}
+
+.voice-panel-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.voice-panel-close {
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  font-size: 20px;
+  padding: 4px;
+  transition: color 0.2s;
+}
+
+.voice-panel-close:hover {
+  color: #fff;
+}
+
+/* Messages */
+.voice-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.voice-message {
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.5;
+  max-width: 85%;
+  word-wrap: break-word;
+}
+
+.voice-message.user {
+  background: rgba(255, 107, 0, 0.15);
+  border: 1px solid rgba(255, 107, 0, 0.3);
+  color: #fff;
+  align-self: flex-end;
+  margin-left: auto;
+}
+
+.voice-message.assistant {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  align-self: flex-start;
+}
+
+.voice-message.interim {
+  opacity: 0.6;
+  font-style: italic;
+}
+
+/* Status Indicator */
+.voice-status {
+  text-align: center;
+  padding: 8px;
+  font-size: 13px;
+  color: #888;
+  font-style: italic;
+}
+
+/* Tooltip */
+.voice-tooltip {
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  margin-bottom: 12px;
+  background: rgba(17, 17, 17, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 107, 0, 0.3);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: #fff;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.voice-button:hover .voice-tooltip {
+  opacity: 1;
+}
+
+/* Microphone Icon */
+.mic-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .voice-assistant-widget {
+    bottom: 16px;
+    right: 16px;
+  }
+
+  .voice-button {
+    width: 56px;
+    height: 56px;
+    font-size: 24px;
+  }
+
+  .voice-conversation-panel {
+    max-width: calc(100vw - 32px);
+    max-height: 300px;
+  }
+}
+
+/* Scrollbar Styling */
+.voice-conversation-panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+.voice-conversation-panel::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+
+.voice-conversation-panel::-webkit-scrollbar-thumb {
+  background: rgba(255, 107, 0, 0.5);
+  border-radius: 3px;
+}
+
+.voice-conversation-panel::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 107, 0, 0.7);
+}

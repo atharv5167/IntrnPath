@@ -1,0 +1,231 @@
+================================================================================
+                    INTERNPATH VOICE ASSISTANT - INTEGRATION GUIDE
+================================================================================
+
+Hello! This is the Voice Assistant module for InternPath. It adds AI-powered
+voice chat functionality to any website. Uses 100% FREE APIs.
+
+================================================================================
+📁 FOLDER STRUCTURE
+================================================================================
+
+voice-assistant/
+├── src/                    ← CORE MODULES (REQUIRED)
+│   ├── index.js            - Main orchestrator (import this!)
+│   ├── ai-provider.js      - Groq AI integration
+│   ├── stt.js              - Speech-to-Text (Web Speech API)
+│   ├── tts.js              - Text-to-Speech (Web Speech API)
+│   ├── context.js          - Fetch user data from your API
+│   └── conversation.js     - Conversation history manager
+│
+├── ui/                     ← UI COMPONENTS (OPTIONAL)
+│   ├── voice-widget.js     - Floating mic button widget
+│   └── voice-widget.css    - Widget styles (orange theme)
+│
+└── INSTRUCTIONS.txt        - This file
+
+================================================================================
+🚀 QUICK START (3 STEPS)
+================================================================================
+
+STEP 1: Copy the 'src' folder to your project
+──────────────────────────────────────────────
+   Copy the entire 'src/' folder to your project.
+   Example: your-project/voice-assistant/src/
+
+STEP 2: Add to your HTML
+──────────────────────────────────────────────
+   <script type="module">
+     import { InternPathVoiceAssistant } from './voice-assistant/src/index.js';
+     
+     // Create instance
+     const assistant = new InternPathVoiceAssistant({
+       groqApiKey: 'YOUR_GROQ_API_KEY',  // Get free key from console.groq.com
+       useMockData: true                  // Set false to use real API
+     });
+     
+     // Handle responses  
+     assistant.onResponse = (response) => {
+       console.log('AI said:', response);
+     };
+     
+     // Start voice chat
+     document.getElementById('your-mic-button').onclick = () => {
+       assistant.toggle();
+     };
+   </script>
+
+STEP 3: Get FREE Groq API Key
+──────────────────────────────────────────────
+   1. Go to: https://console.groq.com
+   2. Sign up (free)
+   3. Create API Key (starts with 'gsk_')
+   4. That's it! 14,400 free requests/day
+
+================================================================================
+📖 FULL API REFERENCE
+================================================================================
+
+CONSTRUCTOR OPTIONS:
+────────────────────
+  new InternPathVoiceAssistant({
+    groqApiKey: 'gsk_xxx',           // Required: Your Groq API key
+    authToken: 'user-token',          // Optional: For your backend API
+    apiBaseUrl: '/api',               // Optional: Your API base URL
+    useMockData: false,               // Optional: Use demo data if true
+    autoSpeak: true,                  // Optional: Speak responses automatically
+    model: 'llama-3.3-70b-versatile'  // Optional: AI model to use
+  });
+
+METHODS:
+────────
+  assistant.startListening()     - Start voice input
+  assistant.stopListening()      - Stop voice input  
+  assistant.toggle()             - Toggle listening/stop
+  assistant.speak(text)          - Speak text aloud
+  assistant.sendMessage(text)    - Send text (no voice input)
+  assistant.setApiKey(key)       - Update API key
+  assistant.clearConversation()  - Clear chat history
+  assistant.getState()           - Get current state
+  assistant.destroy()            - Cleanup
+
+EVENT CALLBACKS:
+────────────────
+  assistant.onStateChange = (newState, oldState) => { }
+  assistant.onTranscript = (userText) => { }
+  assistant.onInterimTranscript = (partialText) => { }
+  assistant.onResponse = (aiResponse) => { }
+  assistant.onError = ({code, message}) => { }
+  assistant.onReady = () => { }
+
+STATES:
+───────
+  'idle'       - Ready, waiting for input
+  'listening'  - Microphone active, user speaking
+  'processing' - AI is thinking
+  'speaking'   - AI is speaking response
+  'error'      - Something went wrong
+
+================================================================================
+🎨 USING THE UI WIDGET (OPTIONAL)
+================================================================================
+
+If you want the pre-built floating mic button:
+
+1. Copy 'ui/' folder to your project
+
+2. Add CSS to your HTML:
+   <link rel="stylesheet" href="./voice-assistant/ui/voice-widget.css">
+
+3. Import and initialize:
+   <script type="module">
+     import { VoiceWidget } from './voice-assistant/ui/voice-widget.js';
+     
+     const widget = new VoiceWidget({
+       groqApiKey: 'YOUR_KEY',
+       position: 'bottom-right',    // bottom-right, bottom-left, etc.
+       theme: 'dark'                // dark or light
+     });
+     
+     // Widget auto-creates floating button!
+   </script>
+
+================================================================================
+🔌 CONNECTING TO YOUR BACKEND (OPTIONAL)
+================================================================================
+
+To personalize AI responses with your user's data:
+
+1. Edit 'src/context.js' - update the API endpoints:
+
+   API_ENDPOINTS = {
+     profile: '/your-api/user/profile',
+     skills: '/your-api/user/skills',
+     progress: '/your-api/user/progress'
+   }
+
+2. Pass auth token:
+   const assistant = new InternPathVoiceAssistant({
+     groqApiKey: 'xxx',
+     authToken: 'user-jwt-token',    // Will be sent as Bearer token
+     apiBaseUrl: 'https://your-api.com'  
+   });
+
+3. Expected API response format:
+   Profile: { name, email, goal }
+   Skills:  { completed: [...], current: [...] }
+   Progress: { streak, level, points }
+
+================================================================================
+🌐 BROWSER SUPPORT
+================================================================================
+
+  ✅ Chrome (Desktop & Android) - Full support
+  ✅ Edge - Full support  
+  ✅ Safari (iOS 14.5+) - Full support
+  ⚠️ Firefox - TTS only (no speech recognition)
+
+================================================================================
+💡 EXAMPLE: MINIMAL INTEGRATION
+================================================================================
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Voice Chat</title>
+</head>
+<body>
+  <button id="mic">🎤 Talk to AI</button>
+  <div id="response"></div>
+
+  <script type="module">
+    import { InternPathVoiceAssistant } from './voice-assistant/src/index.js';
+    
+    const assistant = new InternPathVoiceAssistant({
+      groqApiKey: 'gsk_YOUR_KEY_HERE',
+      useMockData: true
+    });
+    
+    assistant.onStateChange = (state) => {
+      document.getElementById('mic').textContent = 
+        state === 'listening' ? '🔴 Listening...' :
+        state === 'processing' ? '⏳ Thinking...' :
+        state === 'speaking' ? '🔊 Speaking...' : '🎤 Talk to AI';
+    };
+    
+    assistant.onResponse = (text) => {
+      document.getElementById('response').textContent = text;
+    };
+    
+    document.getElementById('mic').onclick = () => assistant.toggle();
+  </script>
+</body>
+</html>
+
+================================================================================
+❓ TROUBLESHOOTING
+================================================================================
+
+"API key not working"
+  → Make sure key starts with 'gsk_'
+  → Get new key from console.groq.com/keys
+
+"Microphone not working"  
+  → Check browser permissions
+  → Must use HTTPS or localhost
+
+"No speech output"
+  → Check device volume
+  → Try different browser
+
+================================================================================
+📞 QUESTIONS?
+================================================================================
+
+This module was built for InternPath - an AI-powered internship preparation
+platform. Feel free to modify as needed!
+
+Created: January 2025
+Tech: Groq API + Web Speech API (100% Free)
+
+================================================================================

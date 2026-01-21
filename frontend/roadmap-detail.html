@@ -733,7 +733,8 @@
       const userSkills = userData.currentSkills || {};
       const goal = userData.goal;
 
-      const dynamicRoadmap = generateDynamicRoadmap(goal, userSkills);
+      // Use getUserRoadmap to pick up modifications from preview page
+      const dynamicRoadmap = getUserRoadmap(goal, userSkills);
       if (!dynamicRoadmap) {
         document.getElementById('flowMap').innerHTML = '<p class="text-muted">Could not generate roadmap</p>';
         return;
@@ -905,5 +906,7 @@
       if (e.key === 'Escape') closeSkillPanel();
     });
   </script>
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
 </body>
 </html>
