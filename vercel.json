@@ -1,23 +1,47 @@
 {
-    "outputDirectory": "frontend",
-    "cleanUrls": true,
-    "trailingSlash": false,
-    "rewrites": [
+    "version": 2,
+    "builds": [
         {
-            "source": "/dashboard",
-            "destination": "/dashboard.html"
+            "src": "api/index.js",
+            "use": "@vercel/node"
         },
         {
-            "source": "/onboarding",
-            "destination": "/onboarding.html"
+            "src": "frontend/**",
+            "use": "@vercel/static"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/api/(.*)",
+            "dest": "/api/index.js"
         },
         {
-            "source": "/roadmap-detail",
-            "destination": "/roadmap-detail.html"
+            "src": "/dashboard",
+            "dest": "/frontend/dashboard.html"
         },
         {
-            "source": "/(.*)",
-            "destination": "/index.html"
+            "src": "/onboarding",
+            "dest": "/frontend/onboarding.html"
+        },
+        {
+            "src": "/roadmap-detail",
+            "dest": "/frontend/roadmap-detail.html"
+        },
+        {
+            "src": "/login",
+            "dest": "/frontend/login.html"
+        },
+        {
+            "src": "/register",
+            "dest": "/frontend/register.html"
+        },
+        {
+            "src": "/(.*\\.(html|css|js|png|jpg|jpeg|gif|svg|ico|webp|woff|woff2|ttf|eot))",
+            "dest": "/frontend/$1"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "/frontend/index.html"
         }
     ]
 }

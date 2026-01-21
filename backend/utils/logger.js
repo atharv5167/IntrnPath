@@ -2,6 +2,9 @@
 const winston = require('winston');
 const path = require('path');
 
+const isProduction = process.env.NODE_ENV === 'production';
+const isVercel = process.env.VERCEL === '1';
+
 // Custom log format
 const logFormat = winston.format.combine(
     winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
@@ -15,18 +18,20 @@ const logFormat = winston.format.combine(
     })
 );
 
-// Create logger instance
-const logger = winston.createLogger({
-    level: process.env.LOG_LEVEL || 'info',
-    format: logFormat,
-    transports: [
-        // Console output (always)
-        new winston.transports.Console({
-            format: winston.format.combine(
-                winston.format.colorize(),
-                logFormat
-            )
-        }),
+// Create transports array - in serverless/Vercel, only use console
+const transports = [
+    // Console output (always)
+    new winston.transports.Console({
+        format: winston.format.combine(
+            winston.format.colorize(),
+            logFormat
+        )
+    })
+];
+
+// Only add file transports in local development (not on Vercel - read-only filesystem)
+if (!isVercel && !isProduction) {
+    transports.push(
         // File output for errors
         new winston.transports.File({
             filename: path.join(__dirname, '../../logs/error.log'),
@@ -40,17 +45,14 @@ const logger = winston.createLogger({
             maxsize: 5242880, // 5MB
             maxFiles: 5
         })
-    ],
-    exceptionHandlers: [
-        new winston.transports.File({
-            filename: path.join(__dirname, '../../logs/exceptions.log')
-        })
-    ],
-    rejectionHandlers: [
-        new winston.transports.File({
-            filename: path.join(__dirname, '../../logs/rejections.log')
-        })
-    ]
+    );
+}
+
+// Create logger instance
+const logger = winston.createLogger({
+    level: process.env.LOG_LEVEL || 'info',
+    format: logFormat,
+    transports
 });
 
 // Request logging middleware
