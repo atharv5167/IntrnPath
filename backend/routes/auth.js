@@ -12,6 +12,15 @@ const logger = require('../utils/logger');
  */
 router.post('/register', authLimiter, async (req, res, next) => {
     try {
+        // Check if Supabase is configured
+        if (!supabase) {
+            return res.status(503).json({
+                success: false,
+                error: 'Service Unavailable',
+                message: 'Database service is not configured. Please contact support.'
+            });
+        }
+
         const { email, password, name, year, branch, goal } = req.body;
 
         // Validate required fields
