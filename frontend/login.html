@@ -508,6 +508,7 @@
   </div>
 
   <script src="js/api.js"></script>
+  <script src="js/sync.js"></script>
   <script src="js/auth.js"></script>
   <script>
     const loginForm = document.getElementById('loginForm');
@@ -529,23 +530,39 @@
         const response = await API.auth.login(email, password);
 
         if (response.success) {
+          // Try to sync user data from server
+          if (window.DataSync) {
+            await window.DataSync.loadAllUserData();
+          }
+
+          // Check onboarding status from MULTIPLE sources
+          const localUser = JSON.parse(localStorage.getItem('internpath_user') || '{}');
+          const hasLocalUserData = localUser.goal && localUser.name;
+          
           // Fetch user profile to check onboarding status
           try {
             const userResponse = await API.auth.getCurrentUser();
             const user = userResponse.data?.user;
+            const apiOnboardingComplete = user?.onboarding_completed === true;
 
-            // Check if user has completed onboarding
-            if (user && user.onboarding_completed === false) {
-              // First-time user - redirect to onboarding
-              window.location.href = 'onboarding.html';
-            } else {
+            // User has completed onboarding if:
+            // 1. API says onboarding_completed is true, OR
+            // 2. User has local data with goal and name set (they went through onboarding before)
+            if (apiOnboardingComplete || hasLocalUserData) {
               // Returning user - redirect to dashboard
               window.location.href = 'dashboard.html';
+            } else {
+              // First-time user - redirect to onboarding
+              window.location.href = 'onboarding.html';
             }
           } catch (err) {
-            // If user fetch fails, default to dashboard
+            // If user fetch fails, check local data as fallback
             console.error('Failed to fetch user profile:', err);
-            window.location.href = 'dashboard.html';
+            if (hasLocalUserData) {
+              window.location.href = 'dashboard.html';
+            } else {
+              window.location.href = 'onboarding.html';
+            }
           }
         }
       } catch (error) {

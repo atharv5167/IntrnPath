@@ -777,6 +777,7 @@
   </div>
 
   <script src="js/api.js"></script>
+  <script src="js/sync.js"></script>
   <script src="app.js"></script>
   <script src="js/roadmap-ai.js"></script>
   <script>
@@ -1323,18 +1324,48 @@
       const btnText = btn.querySelector('span');
 
       btn.disabled = true;
-      btnText.textContent = 'Finalizing...';
+      btnText.textContent = 'Saving roadmap...';
 
-      // Mark onboarding as complete and redirect
-      const userData = getUserData();
-      if (userData) {
-        userData.roadmapFinalized = true;
-        localStorage.setItem('internpath_user', JSON.stringify(userData));
+      try {
+        // Get the modified roadmap from localStorage
+        const modifiedRoadmap = localStorage.getItem('internpath_modified_roadmap');
+        const schedule = localStorage.getItem('internpath_schedule');
+
+        // Save modified roadmap to API if user is logged in
+        if (window.DataSync && localStorage.getItem('internpath_token')) {
+          const modifiedTemplate = modifiedRoadmap ? JSON.parse(modifiedRoadmap) : null;
+          const scheduleData = schedule ? JSON.parse(schedule) : null;
+          
+          if (modifiedTemplate) {
+            console.log('[RoadmapPreview] Saving modified roadmap to API...');
+            await window.DataSync.saveRoadmap(modifiedTemplate, scheduleData);
+            console.log('[RoadmapPreview] Roadmap saved successfully');
+          }
+        }
+
+        // Mark onboarding as complete and redirect
+        const userData = getUserData();
+        if (userData) {
+          userData.roadmapFinalized = true;
+          userData.onboardingCompleted = true;
+          localStorage.setItem('internpath_user', JSON.stringify(userData));
+
+          // Also update profile on server
+          if (window.DataSync) {
+            await window.DataSync.saveProfile({ onboarding_completed: true });
+          }
+        }
+
+        btnText.textContent = 'Redirecting...';
+        setTimeout(() => {
+          window.location.href = 'dashboard.html';
+        }, 500);
+      } catch (error) {
+        console.error('[RoadmapPreview] Error saving roadmap:', error);
+        btnText.textContent = 'Finalize & Continue';
+        btn.disabled = false;
+        alert('Failed to save roadmap. Please try again.');
       }
-
-      setTimeout(() => {
-        window.location.href = 'dashboard.html';
-      }, 1000);
     });
   </script>
 

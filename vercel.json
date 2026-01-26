@@ -36,7 +36,7 @@
             "dest": "/frontend/register.html"
         },
         {
-            "src": "/(.*\\.(html|css|js|png|jpg|jpeg|gif|svg|ico|webp|woff|woff2|ttf|eot))",
+            "src": "/(.*\\.(html|css|js|png|jpg|jpeg|gif|svg|ico|webp|woff|woff2|ttf|eot|mp4|mp3|webm|ogg|wav|mov))",
             "dest": "/frontend/$1"
         },
         {

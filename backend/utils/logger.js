@@ -30,7 +30,8 @@ const transports = [
 ];
 
 // Only add file transports in local development (not on Vercel - read-only filesystem)
-if (!isVercel && !isProduction) {
+// Only add file transports in local development (never on Vercel or Production)
+if (!isVercel && !isProduction && process.env.NODE_ENV !== 'production') {
     transports.push(
         // File output for errors
         new winston.transports.File({

@@ -66,6 +66,12 @@ const AuthManager = (() => {
             if (response.success && response.data.user) {
                 localStorage.setItem('internpath_user', JSON.stringify(response.data.user));
                 updateUserDisplay(response.data.user);
+
+                // Sync all user data (progress, skills, roadmap) from server
+                if (window.DataSync) {
+                    await window.DataSync.loadAllUserData();
+                    console.log('[Auth] Full user data sync completed');
+                }
             }
         } catch (error) {
             console.error('Failed to load user data:', error);

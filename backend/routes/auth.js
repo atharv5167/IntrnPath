@@ -1,7 +1,7 @@
 // Authentication Routes
 const express = require('express');
 const router = express.Router();
-const { supabase, supabaseAdmin } = require('../config/supabase');
+const { supabase, supabaseAdmin, getSupabase, getSupabaseAdmin } = require('../config/supabase');
 const { authMiddleware } = require('../middleware/auth');
 const { authLimiter } = require('../middleware/rateLimiter');
 const logger = require('../utils/logger');
@@ -13,7 +13,7 @@ const logger = require('../utils/logger');
 router.post('/register', authLimiter, async (req, res, next) => {
     try {
         // Check if Supabase is configured
-        if (!supabase) {
+        if (!getSupabase()) {
             return res.status(503).json({
                 success: false,
                 error: 'Service Unavailable',
@@ -106,6 +106,15 @@ router.post('/register', authLimiter, async (req, res, next) => {
  */
 router.post('/login', authLimiter, async (req, res, next) => {
     try {
+        // Check if Supabase is configured
+        if (!getSupabase()) {
+            return res.status(503).json({
+                success: false,
+                error: 'Service Unavailable',
+                message: 'Database service is not configured. Please contact support.'
+            });
+        }
+
         const { email, password } = req.body;
 
         if (!email || !password) {
@@ -127,6 +136,16 @@ router.post('/login', authLimiter, async (req, res, next) => {
                 success: false,
                 error: 'Login Failed',
                 message: 'Invalid email or password.'
+            });
+        }
+
+        // Defensive check for missing data
+        if (!data || !data.user || !data.session) {
+            logger.error('Login returned incomplete data', { email, hasData: !!data, hasUser: !!data?.user, hasSession: !!data?.session });
+            return res.status(500).json({
+                success: false,
+                error: 'Authentication Error',
+                message: 'Login succeeded but session data was incomplete. Please try again.'
             });
         }
 

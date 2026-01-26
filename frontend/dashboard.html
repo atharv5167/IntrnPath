@@ -41,7 +41,7 @@
 
     <div class="sidebar-footer">
       <a href="index.html" class="sidebar-link"
-        onclick="localStorage.removeItem('internpath_token'); localStorage.removeItem('internpath_refresh_token'); localStorage.removeItem('internpath_user'); localStorage.removeItem('internpath_progress');">
+        onclick="if(window.DataSync) DataSync.clearLocalData(); localStorage.removeItem('internpath_token'); localStorage.removeItem('internpath_refresh_token');">
         <span class="sidebar-link-icon">🚪</span>
         <span>Sign Out</span>
       </a>
@@ -822,15 +822,27 @@
     </button>
   </div>
 
+  <script src="js/api.js"></script>
+  <script src="js/sync.js"></script>
+  <script src="js/auth.js"></script>
   <script src="app.js"></script>
   <script>
-    // Initialize dashboard
-    document.addEventListener('DOMContentLoaded', () => {
+    // Initialize dashboard AFTER sync completes
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Check if user is logged in
+      const token = localStorage.getItem('internpath_token');
+      
+      if (token && window.DataSync) {
+        // Wait for sync to complete before initializing UI
+        console.log('[Dashboard] Waiting for sync to complete...');
+        await window.DataSync.loadAllUserData();
+        console.log('[Dashboard] Sync complete, initializing UI...');
+      }
+      
+      // Now initialize dashboard with synced data
       initDashboard();
     });
   </script>
-  <script src="js/api.js"></script>
-  <script src="js/auth.js"></script>
 
   <!-- Voice Assistant Initialization -->
   <script type="module">

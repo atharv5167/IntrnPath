@@ -1291,6 +1291,15 @@ function toggleSkillComplete(skillId, element) {
   saveProgress(progress);
   updateProgressDisplays();
 
+  // Sync to backend API (if DataSync is available)
+  if (window.DataSync) {
+    if (isCompleting) {
+      window.DataSync.completeSkill(skillId);
+    } else {
+      window.DataSync.uncompleteSkill(skillId);
+    }
+  }
+
   // Record daily progress AFTER saving the main progress
   if (isCompleting) {
     recordDailyProgress(skillId);

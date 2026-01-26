@@ -1,7 +1,10 @@
 // Vercel Serverless Function Entry Point
 // This wraps the Express app for Vercel's serverless deployment
 
-require('dotenv').config();
+// Only load dotenv in local development (Vercel injects env vars automatically)
+if (!process.env.VERCEL) {
+    require('dotenv').config();
+}
 
 const express = require('express');
 const cors = require('cors');
@@ -22,6 +25,7 @@ const linkRoutes = require('../backend/routes/links');
 const projectRoutes = require('../backend/routes/projects');
 const analyticsRoutes = require('../backend/routes/analytics');
 const paymentRoutes = require('../backend/routes/payments');
+const roadmapRoutes = require('../backend/routes/roadmap');
 
 const app = express();
 const isProduction = process.env.NODE_ENV === 'production';
@@ -60,11 +64,23 @@ app.use('/api', apiLimiter);
 
 // Health check (no auth required)
 app.get('/api/health', (req, res) => {
+    // Import getSupabase for status check
+    const { getSupabase, getSupabaseAdmin, getInitError } = require('../backend/config/supabase');
+
     res.json({
         status: 'ok',
         timestamp: new Date().toISOString(),
         environment: process.env.NODE_ENV || 'development',
-        version: '1.0.0'
+        version: '1.0.0',
+        envCheck: {
+            hasSupabaseUrl: !!process.env.SUPABASE_URL,
+            hasSupabaseAnonKey: !!process.env.SUPABASE_ANON_KEY,
+            hasServiceKey: !!process.env.SUPABASE_SERVICE_KEY,
+            isVercel: !!process.env.VERCEL,
+            supabaseClientReady: !!getSupabase(),
+            supabaseAdminReady: !!getSupabaseAdmin(),
+            initError: getInitError() || null
+        }
     });
 });
 
@@ -77,6 +93,7 @@ app.use('/api/links', linkRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/roadmap', roadmapRoutes);
 
 // ===========================================
 // Error Handling

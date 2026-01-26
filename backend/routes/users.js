@@ -1,7 +1,7 @@
 // User Profile Routes
 const express = require('express');
 const router = express.Router();
-const { supabase } = require('../config/supabase');
+const { supabaseAdmin: supabase } = require('../config/supabase');
 const { authMiddleware } = require('../middleware/auth');
 const logger = require('../utils/logger');
 
@@ -39,42 +39,58 @@ router.get('/profile', authMiddleware, async (req, res, next) => {
 
 /**
  * PUT /api/users/profile
- * Update user profile
+ * Update or create user profile (upsert)
  */
 router.put('/profile', authMiddleware, async (req, res, next) => {
     try {
-        const { name, year, branch, goal, avatar, bio, onboarding_completed } = req.body;
+        const { name, year, branch, goal, avatar, bio, onboarding_completed, current_skills, weekly_hours } = req.body;
 
-        const updates = {
+        // First, get the auth user's email
+        const userEmail = req.user.email;
+
+        const upsertData = {
+            id: req.user.id,
+            email: userEmail, // Required field for user_profiles
             updated_at: new Date().toISOString()
         };
 
         // Only include fields that were provided
-        if (name !== undefined) updates.name = name;
-        if (year !== undefined) updates.year = year;
-        if (branch !== undefined) updates.branch = branch;
-        if (goal !== undefined) updates.goal = goal;
-        if (avatar !== undefined) updates.avatar = avatar;
-        if (bio !== undefined) updates.bio = bio;
-        if (onboarding_completed !== undefined) updates.onboarding_completed = onboarding_completed;
+        if (name !== undefined) upsertData.name = name;
+        if (year !== undefined) upsertData.year = year;
+        if (branch !== undefined) upsertData.branch = branch;
+        if (goal !== undefined) upsertData.goal = goal;
+        if (avatar !== undefined) upsertData.avatar = avatar;
+        if (bio !== undefined) upsertData.bio = bio;
+        if (onboarding_completed !== undefined) upsertData.onboarding_completed = onboarding_completed;
+        if (current_skills !== undefined) upsertData.current_skills = current_skills;
+        if (weekly_hours !== undefined) upsertData.weekly_hours = weekly_hours;
 
+        logger.info('Profile upsert attempt', { userId: req.user.id, fields: Object.keys(upsertData) });
+
+        // Use upsert to create profile if it doesn't exist
         const { data, error } = await supabase
             .from('user_profiles')
-            .update(updates)
-            .eq('id', req.user.id)
+            .upsert(upsertData, { onConflict: 'id' })
             .select()
             .single();
 
         if (error) {
-            logger.error('Profile update failed', { userId: req.user.id, error: error.message });
+            logger.error('Profile upsert failed', {
+                userId: req.user.id,
+                error: error.message,
+                code: error.code,
+                details: error.details,
+                hint: error.hint
+            });
             return res.status(500).json({
                 success: false,
                 error: 'Update Failed',
-                message: 'Failed to update profile.'
+                message: 'Failed to update profile.',
+                details: error.message
             });
         }
 
-        logger.info('Profile updated', { userId: req.user.id });
+        logger.info('Profile upserted successfully', { userId: req.user.id });
 
         res.json({
             success: true,
@@ -82,6 +98,7 @@ router.put('/profile', authMiddleware, async (req, res, next) => {
             data
         });
     } catch (err) {
+        logger.error('Profile upsert exception', { error: err.message, stack: err.stack });
         next(err);
     }
 });
