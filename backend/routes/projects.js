@@ -1,7 +1,7 @@
 // Projects Routes
 const express = require('express');
 const router = express.Router();
-const { supabase } = require('../config/supabase');
+const { supabaseAdmin: supabase } = require('../config/supabase');
 const { authMiddleware } = require('../middleware/auth');
 const logger = require('../utils/logger');
 

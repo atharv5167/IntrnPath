@@ -227,6 +227,15 @@ router.post('/refresh', async (req, res, next) => {
             });
         }
 
+        // Defensive check for incomplete session data
+        if (!data || !data.session) {
+            return res.status(500).json({
+                success: false,
+                error: 'Session Error',
+                message: 'Token refresh succeeded but session data was incomplete.'
+            });
+        }
+
         res.json({
             success: true,
             data: {

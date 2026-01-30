@@ -12,6 +12,7 @@ const DataSync = {
     API_BASE: '/api',
     isOnline: true,
     syncInProgress: false,
+    progressLogPending: false,  // Debounce flag for logging progress
 
     /**
      * Get auth token from localStorage
@@ -203,31 +204,47 @@ const DataSync = {
 
     /**
      * Log daily progress (updates streak)
+     * Uses debouncing to prevent race conditions from rapid skill completions
      */
     async logDailyProgress() {
-        const progress = JSON.parse(localStorage.getItem('internpath_progress') || '{}');
-
-        const result = await this.apiRequest('/progress/log', {
-            method: 'POST',
-            body: JSON.stringify({
-                skills_completed: progress.completedSkills || [],
-                tasks_count: progress.completedSkills?.length || 0,
-                time_spent_mins: 0
-            })
-        });
-
-        if (result.success && result.data?.streak) {
-            // Update localStorage with new streak data
-            progress.streakData = {
-                current: result.data.streak.current_streak,
-                longest: result.data.streak.longest_streak,
-                lastActive: result.data.streak.last_activity_date,
-                freezeCount: result.data.streak.freeze_count
-            };
-            localStorage.setItem('internpath_progress', JSON.stringify(progress));
+        // Debounce: if a log is already pending, skip this call
+        if (this.progressLogPending) {
+            console.log('[Sync] Progress log already pending, skipping duplicate call');
+            return true;
         }
 
-        return result.success;
+        this.progressLogPending = true;
+
+        // Delay briefly to batch multiple rapid completions
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        try {
+            const progress = JSON.parse(localStorage.getItem('internpath_progress') || '{}');
+
+            const result = await this.apiRequest('/progress/log', {
+                method: 'POST',
+                body: JSON.stringify({
+                    skills_completed: progress.completedSkills || [],
+                    tasks_count: progress.completedSkills?.length || 0,
+                    time_spent_mins: 0
+                })
+            });
+
+            if (result.success && result.data?.streak) {
+                // Update localStorage with new streak data
+                progress.streakData = {
+                    current: result.data.streak.current_streak,
+                    longest: result.data.streak.longest_streak,
+                    lastActive: result.data.streak.last_activity_date,
+                    freezeCount: result.data.streak.freeze_count
+                };
+                localStorage.setItem('internpath_progress', JSON.stringify(progress));
+            }
+
+            return result.success;
+        } finally {
+            this.progressLogPending = false;
+        }
     },
 
     /**

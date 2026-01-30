@@ -1,7 +1,7 @@
 // Platform Links Routes
 const express = require('express');
 const router = express.Router();
-const { supabase } = require('../config/supabase');
+const { supabaseAdmin: supabase } = require('../config/supabase');
 const { authMiddleware } = require('../middleware/auth');
 const logger = require('../utils/logger');
 
@@ -116,6 +116,15 @@ router.put('/:id', authMiddleware, async (req, res, next) => {
             }
         }
         if (is_visible !== undefined) updates.is_visible = is_visible;
+
+        // Validate that at least one field is being updated
+        if (Object.keys(updates).length === 0) {
+            return res.status(400).json({
+                success: false,
+                error: 'Validation Error',
+                message: 'At least one field (url or is_visible) must be provided for update.'
+            });
+        }
 
         const { data, error } = await supabase
             .from('user_platform_links')

@@ -66,6 +66,34 @@ router.get('/roadmap', authMiddleware, async (req, res, next) => {
 });
 
 /**
+ * GET /api/skills/recommendations
+ * Get skill recommendations based on progress
+ * NOTE: This route MUST come BEFORE /:skillId to avoid being caught by dynamic route
+ */
+router.get('/recommendations', authMiddleware, async (req, res, next) => {
+    try {
+        // Get user's completed and in-progress skills
+        const { data: skills, error } = await supabase
+            .from('user_skills')
+            .select('skill_id, is_completed, proficiency')
+            .eq('user_id', req.user.id);
+
+        if (error) throw error;
+
+        // For now, return empty array - frontend handles recommendation logic
+        res.json({
+            success: true,
+            data: {
+                skills: skills || [],
+                recommendations: [] // To be implemented based on skill dependencies
+            }
+        });
+    } catch (err) {
+        next(err);
+    }
+});
+
+/**
  * GET /api/skills/:skillId
  * Get single skill details
  */
@@ -231,31 +259,6 @@ router.put('/:skillId/notes', authMiddleware, async (req, res, next) => {
             success: true,
             message: 'Notes updated.',
             data
-        });
-    } catch (err) {
-        next(err);
-    }
-});
-
-/**
- * GET /api/skills/recommendations
- * Get skill recommendations based on progress
- */
-router.get('/recommendations', authMiddleware, async (req, res, next) => {
-    try {
-        // Get user's completed and in-progress skills
-        const { data: skills } = await supabase
-            .from('user_skills')
-            .select('skill_id, is_completed, proficiency')
-            .eq('user_id', req.user.id);
-
-        // For now, return empty array - frontend handles recommendation logic
-        res.json({
-            success: true,
-            data: {
-                skills: skills || [],
-                recommendations: [] // To be implemented based on skill dependencies
-            }
         });
     } catch (err) {
         next(err);

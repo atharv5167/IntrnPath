@@ -21,6 +21,7 @@ const linkRoutes = require('./routes/links');
 const projectRoutes = require('./routes/projects');
 const analyticsRoutes = require('./routes/analytics');
 const paymentRoutes = require('./routes/payments');
+const roadmapRoutes = require('./routes/roadmap');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -47,8 +48,14 @@ app.use(cors({
   credentials: true
 }));
 
-// Body parsing
-app.use(express.json({ limit: '10mb' }));
+// Body parsing - skip JSON parsing for webhook endpoint (needs raw body for signature verification)
+app.use((req, res, next) => {
+  if (req.originalUrl === '/api/payments/webhook') {
+    next();
+  } else {
+    express.json({ limit: '10mb' })(req, res, next);
+  }
+});
 app.use(express.urlencoded({ extended: true }));
 
 // Request logging
@@ -85,6 +92,7 @@ app.use('/api/links', linkRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/roadmap', roadmapRoutes);
 
 // ===========================================
 // Frontend Routes (SPA-style)

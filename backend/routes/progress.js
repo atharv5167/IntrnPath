@@ -122,25 +122,32 @@ router.post('/log', authMiddleware, async (req, res, next) => {
                 last_activity_date: today,
                 freeze_count: 1
             };
-        } else if (currentStreak.last_activity_date === today) {
-            // Already logged today
-            streakData = currentStreak;
-        } else if (currentStreak.last_activity_date === yesterdayStr) {
-            // Consecutive day - extend streak
-            const newStreak = currentStreak.current_streak + 1;
-            streakData = {
-                ...currentStreak,
-                current_streak: newStreak,
-                longest_streak: Math.max(newStreak, currentStreak.longest_streak),
-                last_activity_date: today
-            };
         } else {
-            // Streak broken
-            streakData = {
-                ...currentStreak,
-                current_streak: 1,
-                last_activity_date: today
-            };
+            // Normalize last_activity_date to date string for comparison
+            const lastActivityDate = currentStreak.last_activity_date
+                ? String(currentStreak.last_activity_date).split('T')[0]
+                : null;
+
+            if (lastActivityDate === today) {
+                // Already logged today
+                streakData = currentStreak;
+            } else if (lastActivityDate === yesterdayStr) {
+                // Consecutive day - extend streak
+                const newStreak = currentStreak.current_streak + 1;
+                streakData = {
+                    ...currentStreak,
+                    current_streak: newStreak,
+                    longest_streak: Math.max(newStreak, currentStreak.longest_streak),
+                    last_activity_date: today
+                };
+            } else {
+                // Streak broken
+                streakData = {
+                    ...currentStreak,
+                    current_streak: 1,
+                    last_activity_date: today
+                };
+            }
         }
 
         // Upsert streak

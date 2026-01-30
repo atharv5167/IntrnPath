@@ -1,7 +1,7 @@
 // Analytics Routes
 const express = require('express');
 const router = express.Router();
-const { supabase } = require('../config/supabase');
+const { supabaseAdmin: supabase } = require('../config/supabase');
 const { authMiddleware } = require('../middleware/auth');
 
 /**
@@ -169,8 +169,11 @@ router.get('/heatmap', authMiddleware, async (req, res, next) => {
 
         let startDate, endDate;
         if (year && month) {
-            startDate = new Date(year, month - 1, 1);
-            endDate = new Date(year, month, 0); // Last day of month
+            // Explicitly parse to integers for Date constructor
+            const yearNum = parseInt(year, 10);
+            const monthNum = parseInt(month, 10);
+            startDate = new Date(yearNum, monthNum - 1, 1);
+            endDate = new Date(yearNum, monthNum, 0); // Last day of month
         } else {
             // Default to current month
             const now = new Date();

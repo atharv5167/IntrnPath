@@ -48,8 +48,14 @@ app.use(cors({
     credentials: true
 }));
 
-// Body parsing
-app.use(express.json({ limit: '10mb' }));
+// Body parsing - skip JSON parsing for webhook endpoint (needs raw body for signature verification)
+app.use((req, res, next) => {
+    if (req.originalUrl === '/api/payments/webhook') {
+        next();
+    } else {
+        express.json({ limit: '10mb' })(req, res, next);
+    }
+});
 app.use(express.urlencoded({ extended: true }));
 
 // Request logging

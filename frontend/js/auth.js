@@ -124,7 +124,14 @@ const AuthManager = (() => {
     // Get current user from localStorage
     const getUser = () => {
         const userData = localStorage.getItem('internpath_user');
-        return userData ? JSON.parse(userData) : null;
+        if (!userData) return null;
+        try {
+            return JSON.parse(userData);
+        } catch (e) {
+            console.error('Failed to parse user data from localStorage:', e);
+            localStorage.removeItem('internpath_user');
+            return null;
+        }
     };
 
     // Check if user is logged in
